@@ -1,7 +1,7 @@
 {
   "다언이": {
     "nickname": "다언이",
-    "score": 130,
+    "score": 140,
     "word_plants": {
       "river": {
         "stage": 4,
@@ -10,9 +10,13 @@
       "apple": {
         "stage": 4,
         "wilted": false
+      },
+      "plum": {
+        "stage": 1,
+        "wilted": false
       }
     },
-    "correct": 13,
+    "correct": 14,
     "wrong": 2
   }
 }

@@ -3,705 +3,928 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>픽셀 정원 🌱</title>
+<title>픽셀 가든 🌸</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+KR:wght@400;700&display=swap');
-
-  :root {
-    --sky: #87CEEB;
-    --sky-dark: #5a9abf;
-    --ground: #8B5E3C;
-    --grass: #4CAF50;
-    --grass-dark: #388E3C;
-    --soil: #6D4C41;
-    --panel-bg: #FFF8E7;
-    --panel-border: #D4A853;
-    --pixel: 4px;
-    --correct: #4CAF50;
-    --wrong: #E53935;
-    --water: #29B6F6;
-    --text-dark: #2D1B0E;
-    --text-mid: #5C3D1E;
-    --accent: #FF8F00;
-    --wilted: #9E9E9E;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; image-rendering: pixelated; }
-
-  body {
-    background: var(--sky);
-    font-family: 'Noto Sans KR', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ── 로그인 화면 ─────────────────────────────────────── */
-  #login-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background: linear-gradient(to bottom, #87CEEB 60%, #4CAF50 60%);
-  }
-
-  .login-box {
-    background: var(--panel-bg);
-    border: 4px solid var(--panel-border);
-    box-shadow: 6px 6px 0 #8B5E3C;
-    padding: 2rem 2.5rem;
-    text-align: center;
-    max-width: 380px;
-    width: 90%;
-  }
-
-  .login-title {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 14px;
-    color: var(--text-dark);
-    line-height: 1.8;
-    margin-bottom: 1.5rem;
-  }
-
-  .pixel-tree {
-    font-size: 64px;
-    display: block;
-    margin-bottom: 1rem;
-    line-height: 1;
-  }
-
-  input[type="text"] {
-    width: 100%;
-    padding: 0.7rem 1rem;
-    border: 3px solid var(--panel-border);
-    background: #FFFDE7;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 16px;
-    outline: none;
-    margin-bottom: 1rem;
-  }
-
-  input[type="text"]:focus { border-color: var(--accent); }
-
-  .btn {
-    display: inline-block;
-    padding: 0.7rem 1.5rem;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 10px;
-    cursor: pointer;
-    border: 3px solid;
-    transition: transform 0.05s;
-    user-select: none;
-  }
-  .btn:active { transform: translate(2px,2px); }
-  .btn-primary { background: #FFD600; border-color: #F57F17; color: #3E2723; }
-  .btn-green { background: #69F0AE; border-color: #1B5E20; color: #1B5E20; }
-  .btn-blue { background: #40C4FF; border-color: #01579B; color: #01579B; }
-  .btn-red { background: #FF8A80; border-color: #B71C1C; color: #B71C1C; }
-  .btn-gray { background: #ECEFF1; border-color: #546E7A; color: #263238; }
-  .btn-full { width: 100%; display: block; text-align: center; }
-  .btn + .btn { margin-top: 0.5rem; }
-
-  /* ── 메인 레이아웃 ───────────────────────────────────── */
-  #main-screen { display: none; }
-
-  .top-bar {
-    background: #1B5E20;
-    border-bottom: 4px solid #0A3D08;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .top-bar-name {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 9px;
-    color: #CCFF90;
-  }
-
-  .top-bar-score {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 9px;
-    color: #FFD600;
-  }
-
-  .nav-tabs {
-    display: flex;
-    background: #2E7D32;
-    border-bottom: 4px solid #1B5E20;
-  }
-
-  .nav-tab {
-    flex: 1;
-    text-align: center;
-    padding: 0.6rem;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 8px;
-    color: #A5D6A7;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    transition: background 0.1s;
-  }
-
-  .nav-tab.active {
-    background: var(--panel-bg);
-    color: #1B5E20;
-    border-bottom: 3px solid #FFD600;
-  }
-
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
-
-  /* ── 정원 탭 ─────────────────────────────────────────── */
-  #garden-tab {
-    background: linear-gradient(to bottom, #87CEEB 45%, #4CAF50 45%, #4CAF50 55%, #8B5E3C 55%);
-    min-height: 70vh;
-    padding: 1rem;
-    position: relative;
-  }
-
-  .garden-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 72px);
-    gap: 8px;
-    justify-content: center;
-    padding-top: 2rem;
-    padding-bottom: 1rem;
-  }
-
-  .plant-slot {
-    width: 72px;
-    text-align: center;
-    cursor: pointer;
-  }
-
-  .plant-canvas {
-    width: 64px;
-    height: 64px;
-    display: block;
-    margin: 0 auto 2px;
-    image-rendering: pixelated;
-  }
-
-  .plant-label {
-    font-size: 9px;
-    color: var(--text-dark);
-    font-family: 'Press Start 2P', monospace;
-    word-break: break-all;
-    background: rgba(255,255,255,0.7);
-    padding: 1px 2px;
-  }
-
-  /* ── 학습 탭 ─────────────────────────────────────────── */
-  #learn-tab {
-    padding: 1rem;
-    min-height: 70vh;
-    background: var(--panel-bg);
-  }
-
-  .stage-indicator {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 1.5rem;
-  }
-
-  .stage-dot {
-    width: 16px; height: 16px;
-    border: 2px solid #ccc;
-    background: #eee;
-    position: relative;
-  }
-
-  .stage-dot.done { background: #69F0AE; border-color: #1B5E20; }
-  .stage-dot.active { background: #FFD600; border-color: #F57F17; }
-
-  .learn-card {
-    background: white;
-    border: 3px solid var(--panel-border);
-    box-shadow: 4px 4px 0 #D4A853;
-    padding: 2rem 1.5rem;
-    text-align: center;
-    max-width: 480px;
-    margin: 0 auto 1.5rem;
-  }
-
-  .word-display {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 22px;
-    color: #1B5E20;
-    margin-bottom: 0.5rem;
-    letter-spacing: 2px;
-  }
-
-  .meaning-display {
-    font-size: 20px;
-    color: var(--text-mid);
-    font-weight: 700;
-    margin-bottom: 1rem;
-  }
-
-  .hint-text {
-    font-size: 12px;
-    color: #888;
-    margin-bottom: 1.5rem;
-    font-family: 'Press Start 2P', monospace;
-  }
-
-  .options-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 1rem;
-  }
-
-  .option-btn {
-    padding: 0.8rem;
-    border: 3px solid #ccc;
-    background: #FAFAFA;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 15px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.1s;
-  }
-
-  .option-btn:hover { border-color: var(--accent); background: #FFFDE7; }
-  .option-btn.correct { background: #E8F5E9; border-color: #1B5E20; color: #1B5E20; }
-  .option-btn.wrong { background: #FFEBEE; border-color: #B71C1C; color: #B71C1C; }
-
-  .fill-input {
-    width: 100%;
-    padding: 0.8rem;
-    font-size: 18px;
-    border: 3px solid #ccc;
-    text-align: center;
-    font-family: 'Press Start 2P', monospace;
-    letter-spacing: 3px;
-    margin-bottom: 1rem;
-  }
-
-  .fill-input:focus { outline: none; border-color: var(--accent); }
-
-  .sentence-display {
-    font-size: 17px;
-    color: var(--text-dark);
-    margin-bottom: 0.5rem;
-    line-height: 1.7;
-  }
-
-  .translation-display {
-    font-size: 14px;
-    color: #888;
-    margin-bottom: 1.5rem;
-  }
-
-  textarea {
-    width: 100%;
-    min-height: 80px;
-    padding: 0.8rem;
-    font-size: 15px;
-    border: 3px solid #ccc;
-    font-family: 'Noto Sans KR', sans-serif;
-    resize: vertical;
-    margin-bottom: 1rem;
-  }
-
-  textarea:focus { outline: none; border-color: var(--accent); }
-
-  .feedback-box {
-    padding: 1rem;
-    border: 3px solid;
-    font-size: 15px;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 1rem;
-    display: none;
-  }
-
-  .feedback-box.correct { background: #E8F5E9; border-color: #1B5E20; color: #1B5E20; }
-  .feedback-box.wrong { background: #FFEBEE; border-color: #B71C1C; color: #B71C1C; }
-
-  /* ── 복습 탭 ─────────────────────────────────────────── */
-  #review-tab {
-    padding: 1rem;
-    background: #FFF3E0;
-    min-height: 70vh;
-  }
-
-  .review-title {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 10px;
-    color: var(--text-dark);
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-
-  .flashcard-container {
-    perspective: 800px;
-    max-width: 360px;
-    margin: 0 auto 1.5rem;
-    height: 200px;
-  }
-
-  .flashcard {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.4s;
-    cursor: pointer;
-  }
-
-  .flashcard.flipped { transform: rotateY(180deg); }
-
-  .flashcard-face {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 4px solid var(--panel-border);
-    background: white;
-    box-shadow: 5px 5px 0 #D4A853;
-  }
-
-  .flashcard-back { transform: rotateY(180deg); background: #FFFDE7; }
-
-  .flashcard-word {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 18px;
-    color: #1B5E20;
-    margin-bottom: 0.5rem;
-  }
-
-  .flashcard-meaning {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text-mid);
-  }
-
-  .flashcard-hint {
-    font-size: 11px;
-    color: #aaa;
-    margin-top: 0.5rem;
-  }
-
-  .review-nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .review-counter {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 10px;
-    color: var(--text-dark);
-  }
-
-  .wilted-list {
-    max-width: 480px;
-    margin: 0 auto;
-  }
-
-  .wilted-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: white;
-    border: 2px solid #FFCC02;
-    padding: 0.7rem 1rem;
-    margin-bottom: 8px;
-  }
-
-  .wilted-emoji { font-size: 24px; }
-
-  .wilted-word {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 11px;
-    color: var(--text-dark);
-  }
-
-  .wilted-meaning {
-    font-size: 13px;
-    color: var(--text-mid);
-    margin-top: 2px;
-  }
-
-  /* ── 랭킹 탭 ─────────────────────────────────────────── */
-  #ranking-tab {
-    padding: 1rem;
-    background: #E8F5E9;
-    min-height: 70vh;
-  }
-
-  .ranking-item {
-    display: flex;
-    align-items: center;
-    background: white;
-    border: 2px solid #A5D6A7;
-    padding: 0.7rem 1rem;
-    margin-bottom: 8px;
-    max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .rank-num {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 13px;
-    width: 36px;
-    color: var(--accent);
-  }
-
-  .rank-name {
-    font-size: 15px;
-    font-weight: 700;
-    flex: 1;
-  }
-
-  .rank-score {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 10px;
-    color: #1B5E20;
-  }
-
-  /* ── 토스트 메시지 ───────────────────────────────────── */
-  #toast {
-    position: fixed;
-    bottom: 1.5rem;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: #212121;
-    color: white;
-    padding: 0.8rem 1.5rem;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 9px;
-    line-height: 1.6;
-    max-width: 320px;
-    text-align: center;
-    transition: transform 0.3s;
-    z-index: 1000;
-    pointer-events: none;
-  }
-
-  #toast.show { transform: translateX(-50%) translateY(0); }
-
-  /* ── 식물 팝업 ───────────────────────────────────────── */
-  #plant-popup {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-  }
-
-  #plant-popup.show { display: flex; }
-
-  .popup-box {
-    background: var(--panel-bg);
-    border: 4px solid var(--panel-border);
-    box-shadow: 6px 6px 0 #8B5E3C;
-    padding: 2rem;
-    text-align: center;
-    max-width: 300px;
-    width: 90%;
-  }
-
-  .popup-word {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 16px;
-    color: #1B5E20;
-    margin-bottom: 0.5rem;
-  }
-
-  .popup-meaning {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-  }
-
-  .popup-stage {
-    font-size: 12px;
-    color: #888;
-    margin-bottom: 1rem;
-  }
-
-  .stage-bar {
-    display: flex;
-    gap: 4px;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-  }
-
-  .stage-pip {
-    width: 20px; height: 12px;
-    border: 2px solid #ccc;
-    background: #eee;
-  }
-
-  .stage-pip.filled { background: #69F0AE; border-color: #1B5E20; }
-  .stage-pip.wilted-pip { background: #EF9A9A; border-color: #B71C1C; }
-
-  .loading { text-align: center; padding: 2rem; color: #888; font-size: 13px; }
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+:root {
+  --sky1: #7EC8E3;
+  --sky2: #B8E0F7;
+  --grass: #5DBB5D;
+  --grass2: #4CAF50;
+  --soil: #8B5E3C;
+  --soil2: #6D4C41;
+  --fence: #C8A96E;
+  --fence2: #8B6914;
+  --panel: #FFF8E7;
+  --panel-b: #D4A853;
+  --gold: #FFD600;
+  --gold2: #F57F17;
+  --green1: #69F0AE;
+  --green2: #1B5E20;
+  --blue1: #40C4FF;
+  --blue2: #01579B;
+  --red1: #FF8A80;
+  --red2: #B71C1C;
+  --dark: #2D1B0E;
+  --mid: #5C3D1E;
+  --hp-green: #4CAF50;
+  --hp-yellow: #FFC107;
+  --hp-red: #F44336;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: #1a1a2e;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── 로그인 ─────────────────────────────────────── */
+#login-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0f0c29, #302b63, #24243e);
+  padding: 1rem;
+}
+
+.login-box {
+  background: #1a1040;
+  border: 4px solid var(--gold);
+  box-shadow: 0 0 30px rgba(255,214,0,0.3), 6px 6px 0 #000;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  max-width: 380px;
+  width: 100%;
+}
+
+.game-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 18px;
+  color: var(--gold);
+  text-shadow: 3px 3px 0 #8B6914, 0 0 20px rgba(255,214,0,0.5);
+  line-height: 2;
+  margin-bottom: 0.5rem;
+}
+
+.game-subtitle {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: #AAB8C2;
+  margin-bottom: 2rem;
+  letter-spacing: 1px;
+}
+
+.pixel-art-title {
+  font-size: 72px;
+  display: block;
+  margin-bottom: 1.5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.rpg-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 3px solid var(--gold);
+  background: #0d0820;
+  color: #FFE082;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  outline: none;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+}
+
+.rpg-input::placeholder { color: #555; font-size: 9px; }
+.rpg-input:focus { border-color: #fff; box-shadow: 0 0 10px rgba(255,214,0,0.4); }
+
+.rpg-btn {
+  display: block;
+  width: 100%;
+  padding: 0.9rem;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  border: 3px solid;
+  transition: all 0.1s;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.rpg-btn:active { transform: translate(2px,2px); box-shadow: none !important; }
+.rpg-btn-gold {
+  background: var(--gold);
+  border-color: var(--gold2);
+  color: #3E2723;
+  box-shadow: 4px 4px 0 #8B6914;
+}
+.rpg-btn-green {
+  background: #2E7D32;
+  border-color: var(--green1);
+  color: var(--green1);
+  box-shadow: 4px 4px 0 #1B5E20;
+}
+.rpg-btn-blue {
+  background: #01579B;
+  border-color: var(--blue1);
+  color: var(--blue1);
+  box-shadow: 4px 4px 0 #003c6e;
+}
+.rpg-btn-gray {
+  background: #263238;
+  border-color: #607D8B;
+  color: #B0BEC5;
+  box-shadow: 4px 4px 0 #000;
+}
+.rpg-btn-red {
+  background: #B71C1C;
+  border-color: var(--red1);
+  color: var(--red1);
+  box-shadow: 4px 4px 0 #7B0000;
+}
+
+/* ── 메인 ─────────────────────────────────────── */
+#main-screen { display: none; min-height: 100vh; background: #1a1a2e; }
+
+/* 상단 HUD */
+.hud {
+  background: #0d0820;
+  border-bottom: 3px solid var(--gold);
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.hud-name {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  text-shadow: 1px 1px 0 #000;
+}
+
+.hud-score {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: #FFE082;
+}
+
+.hud-progress {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: var(--green1);
+}
+
+/* 탭 네비 */
+.nav {
+  display: flex;
+  background: #12103a;
+  border-bottom: 3px solid #302b63;
+}
+
+.nav-btn {
+  flex: 1;
+  padding: 0.8rem 0.3rem;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: #607D8B;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  border-bottom: 3px solid transparent;
+  transition: all 0.1s;
+  line-height: 1.6;
+}
+
+.nav-btn.active {
+  color: var(--gold);
+  border-bottom: 3px solid var(--gold);
+  background: #1a1040;
+  text-shadow: 0 0 8px rgba(255,214,0,0.5);
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── 정원 탭 ─────────────────────────────────── */
+#garden-tab {
+  min-height: 80vh;
+  background: linear-gradient(180deg, #87CEEB 0%, #87CEEB 35%, #5DBB5D 35%, #5DBB5D 48%, #8B5E3C 48%);
+  padding: 1rem;
+  position: relative;
+}
+
+.garden-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+/* 울타리 꽃밭 */
+.fence-garden {
+  max-width: 500px;
+  margin: 1rem auto;
+  position: relative;
+}
+
+.fence-top {
+  display: flex;
+  gap: 0;
+  margin-bottom: -2px;
+}
+
+.fence-post {
+  width: 16px;
+  height: 32px;
+  background: var(--fence);
+  border: 2px solid var(--fence2);
+  flex-shrink: 0;
+}
+
+.fence-rail {
+  flex: 1;
+  height: 12px;
+  background: var(--fence);
+  border: 2px solid var(--fence2);
+  align-self: center;
+}
+
+.garden-bed {
+  background: #5D4037;
+  border: 3px solid var(--fence2);
+  border-top: none;
+  min-height: 160px;
+  padding: 1rem 0.5rem 0.5rem;
+  position: relative;
+}
+
+.soil-line {
+  height: 12px;
+  background: repeating-linear-gradient(90deg, #795548 0px, #795548 8px, #6D4C41 8px, #6D4C41 16px);
+  margin-bottom: 8px;
+  border-radius: 2px;
+}
+
+.flower-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 52px);
+  gap: 6px;
+  justify-content: center;
+}
+
+.flower-slot {
+  width: 52px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.flower-canvas {
+  width: 48px;
+  height: 48px;
+  display: block;
+  margin: 0 auto 2px;
+  image-rendering: pixelated;
+}
+
+.flower-name {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px;
+  color: #FFE082;
+  word-break: break-all;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.fence-bottom {
+  display: flex;
+  gap: 0;
+  margin-top: -2px;
+}
+
+.garden-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: #FFE082;
+  line-height: 2;
+}
+
+/* ── 학습 탭 ─────────────────────────────────── */
+#learn-tab {
+  min-height: 80vh;
+  background: #1a1a2e;
+  padding: 1rem;
+}
+
+/* 스테이지 HUD */
+.stage-hud {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.stage-chip {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  padding: 4px 8px;
+  border: 2px solid;
+  opacity: 0.4;
+  transition: all 0.2s;
+}
+
+.stage-chip.done { background: #2E7D32; border-color: var(--green1); color: var(--green1); opacity: 1; }
+.stage-chip.active { background: #F57F17; border-color: var(--gold); color: var(--gold); opacity: 1; animation: pulse 1s infinite; }
+
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,214,0,0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(255,214,0,0); }
+}
+
+/* RPG 카드 */
+.rpg-card {
+  background: #12103a;
+  border: 3px solid #302b63;
+  box-shadow: 0 0 20px rgba(48,43,99,0.5), 4px 4px 0 #000;
+  padding: 1.5rem;
+  max-width: 480px;
+  margin: 0 auto 1.5rem;
+}
+
+.word-big {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 24px;
+  color: var(--gold);
+  text-shadow: 2px 2px 0 #8B6914, 0 0 15px rgba(255,214,0,0.3);
+  text-align: center;
+  margin-bottom: 0.5rem;
+  letter-spacing: 3px;
+}
+
+.meaning-big {
+  font-size: 22px;
+  font-weight: 700;
+  color: #FFE082;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.card-emoji {
+  font-size: 52px;
+  text-align: center;
+  display: block;
+  margin: 0.5rem 0;
+  filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5));
+}
+
+.card-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: #607D8B;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  border: 2px solid;
+  margin: 0 auto 1rem;
+  display: block;
+  text-align: center;
+  max-width: 220px;
+}
+
+.badge-new { background: #1B5E20; border-color: var(--green1); color: var(--green1); }
+.badge-review { background: #B71C1C; border-color: var(--red1); color: var(--red1); }
+.badge-grow { background: #E65100; border-color: #FF9800; color: #FF9800; }
+
+/* 4지선다 */
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.opt-btn {
+  padding: 0.8rem 0.5rem;
+  border: 2px solid #302b63;
+  background: #1a1040;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #B0BEC5;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.1s;
+}
+
+.opt-btn:hover { border-color: var(--gold); color: var(--gold); background: #1e1855; }
+.opt-btn.correct { background: #1B5E20; border-color: var(--green1); color: var(--green1); }
+.opt-btn.wrong { background: #7B0000; border-color: var(--red1); color: var(--red1); }
+
+/* 빈칸 입력 */
+.rpg-fill {
+  width: 100%;
+  padding: 0.8rem;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  border: 3px solid #302b63;
+  background: #0d0820;
+  color: var(--gold);
+  text-align: center;
+  letter-spacing: 3px;
+  margin-bottom: 1rem;
+  outline: none;
+}
+
+.rpg-fill:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(255,214,0,0.3); }
+
+.rpg-textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.8rem;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+  border: 3px solid #302b63;
+  background: #0d0820;
+  color: #FFE082;
+  resize: vertical;
+  margin-bottom: 1rem;
+  outline: none;
+}
+
+.rpg-textarea:focus { border-color: var(--gold); }
+
+.sentence-box {
+  background: #0d0820;
+  border: 2px solid #302b63;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 16px;
+  color: #E0E0E0;
+  line-height: 1.8;
+  text-align: center;
+}
+
+.trans-box {
+  font-size: 13px;
+  color: #607D8B;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* 피드백 */
+.feedback {
+  padding: 0.8rem;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  line-height: 1.8;
+  text-align: center;
+  border: 2px solid;
+  margin-bottom: 1rem;
+  display: none;
+}
+
+.feedback.correct { background: #1B5E20; border-color: var(--green1); color: var(--green1); }
+.feedback.wrong { background: #7B0000; border-color: var(--red1); color: var(--red1); }
+
+.btn-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+/* ── 복습 탭 ─────────────────────────────────── */
+#review-tab {
+  min-height: 80vh;
+  background: #1a1a2e;
+  padding: 1rem;
+}
+
+.tab-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* 플래시카드 */
+.fc-wrap {
+  perspective: 800px;
+  max-width: 360px;
+  margin: 0 auto 1.5rem;
+  height: 200px;
+}
+
+.fc-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.4s;
+  cursor: pointer;
+}
+
+.fc-inner.flipped { transform: rotateY(180deg); }
+
+.fc-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #302b63;
+  background: #12103a;
+  box-shadow: 4px 4px 0 #000;
+}
+
+.fc-back { transform: rotateY(180deg); background: #1B5E20; border-color: var(--green1); }
+
+.fc-word {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 20px;
+  color: var(--gold);
+  text-shadow: 2px 2px 0 #000;
+  margin-bottom: 0.5rem;
+}
+
+.fc-meaning {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--green1);
+}
+
+.fc-hint {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: #607D8B;
+  margin-top: 0.5rem;
+}
+
+.fc-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.fc-counter {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: #FFE082;
+}
+
+/* 시든 목록 */
+.wilted-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #12103a;
+  border: 2px solid #7B0000;
+  padding: 0.7rem 1rem;
+  margin-bottom: 8px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wilted-word {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  color: var(--red1);
+}
+
+.wilted-meaning { font-size: 13px; color: #B0BEC5; margin-top: 2px; }
+
+/* ── 랭킹 탭 ─────────────────────────────────── */
+#ranking-tab {
+  min-height: 80vh;
+  background: #1a1a2e;
+  padding: 1rem;
+}
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  background: #12103a;
+  border: 2px solid #302b63;
+  padding: 0.8rem 1rem;
+  margin-bottom: 8px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: border-color 0.2s;
+}
+
+.rank-item:first-child { border-color: var(--gold); }
+.rank-item:nth-child(2) { border-color: #B0BEC5; }
+.rank-item:nth-child(3) { border-color: #CD7F32; }
+
+.rank-num {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  width: 40px;
+  color: var(--gold);
+}
+
+.rank-name { font-size: 15px; font-weight: 700; color: #FFE082; flex: 1; }
+.rank-flowers { font-size: 11px; color: #4CAF50; }
+.rank-score {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--gold);
+}
+
+/* ── 팝업 ─────────────────────────────────────── */
+#plant-popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+
+#plant-popup.show { display: flex; }
+
+.popup-box {
+  background: #12103a;
+  border: 4px solid var(--gold);
+  box-shadow: 0 0 30px rgba(255,214,0,0.3), 6px 6px 0 #000;
+  padding: 2rem;
+  text-align: center;
+  max-width: 300px;
+  width: 90%;
+}
+
+.popup-emoji { font-size: 60px; display: block; margin-bottom: 0.5rem; }
+.popup-word {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  color: var(--gold);
+  margin-bottom: 0.3rem;
+}
+
+.popup-meaning { font-size: 18px; font-weight: 700; color: #FFE082; margin-bottom: 0.3rem; }
+.popup-stage { font-family: 'Press Start 2P', monospace; font-size: 8px; color: #607D8B; margin-bottom: 1rem; }
+
+.stage-pips { display: flex; gap: 4px; justify-content: center; margin-bottom: 1.5rem; }
+.pip { width: 24px; height: 8px; border: 2px solid #302b63; background: #1a1040; }
+.pip.filled { background: var(--green1); border-color: #1B5E20; }
+.pip.wilted-pip { background: var(--red1); border-color: var(--red2); }
+
+/* ── 토스트 ───────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #0d0820;
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  padding: 0.8rem 1.5rem;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  line-height: 1.8;
+  max-width: 320px;
+  text-align: center;
+  transition: transform 0.3s;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 0 15px rgba(255,214,0,0.3);
+}
+
+#toast.show { transform: translateX(-50%) translateY(0); }
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: #607D8B;
+  line-height: 2;
+}
+
+/* 레벨업 오버레이 */
+#levelup-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#levelup-overlay.show { display: flex; }
+
+.levelup-text {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 20px;
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(255,214,0,0.8), 3px 3px 0 #000;
+  text-align: center;
+  animation: levelup-bounce 0.5s ease infinite alternate;
+  margin-bottom: 1rem;
+}
+
+@keyframes levelup-bounce {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+
+.levelup-emoji { font-size: 80px; margin-bottom: 1rem; animation: spin 1s linear infinite; }
+@keyframes spin {
+  from { transform: rotate(-5deg) scale(1); }
+  to { transform: rotate(5deg) scale(1.1); }
+}
 </style>
 </head>
 <body>
 
-<!-- ══ 로그인 화면 ══════════════════════════════════════════ -->
+<!-- ══ 로그인 ════════════════════════════════════════════ -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="pixel-tree">🌱</span>
-    <div class="login-title">PIXEL<br>GARDEN</div>
-    <p style="font-size:13px;color:#555;margin-bottom:1.2rem;">단어를 심고 정원을 키워봐!</p>
-    <input type="text" id="nickname-input" placeholder="닉네임 입력 (1~10자)" maxlength="10">
-    <button class="btn btn-primary btn-full" onclick="login()">시작하기 ▶</button>
+    <span class="pixel-art-title">🌸</span>
+    <div class="game-title">PIXEL<br>GARDEN</div>
+    <div class="game-subtitle">단어를 심고 정원을 키워봐!</div>
+    <input class="rpg-input" type="text" id="nickname-input" placeholder="닉네임 입력 (1~10자)" maxlength="10">
+    <button class="rpg-btn rpg-btn-gold" onclick="login()">▶ START GAME</button>
   </div>
 </div>
 
-<!-- ══ 메인 화면 ════════════════════════════════════════════ -->
+<!-- ══ 메인 ══════════════════════════════════════════════ -->
 <div id="main-screen">
-  <div class="top-bar">
-    <span class="top-bar-name" id="top-name">플레이어</span>
-    <span class="top-bar-score" id="top-score">⭐ 0</span>
+  <div class="hud">
+    <span class="hud-name" id="hud-name">PLAYER</span>
+    <span class="hud-progress" id="hud-progress">🌸 0개</span>
+    <span class="hud-score" id="hud-score">⭐ 0</span>
   </div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="switchTab('garden')">🌿 정원</button>
-    <button class="nav-tab" onclick="switchTab('learn')">📖 학습</button>
-    <button class="nav-tab" onclick="switchTab('review')">🔁 복습</button>
-    <button class="nav-tab" onclick="switchTab('ranking')">🏆 랭킹</button>
+  <div class="nav">
+    <button class="nav-btn active" onclick="switchTab('garden', this)">🌿<br>정원</button>
+    <button class="nav-btn" onclick="switchTab('learn', this)">📖<br>학습</button>
+    <button class="nav-btn" onclick="switchTab('review', this)">🔁<br>복습</button>
+    <button class="nav-btn" onclick="switchTab('ranking', this)">🏆<br>랭킹</button>
   </div>
 
-  <!-- 정원 탭 -->
+  <!-- 정원 -->
   <div id="garden-tab" class="tab-content active">
-    <div class="garden-grid" id="garden-grid">
-      <div class="loading">정원을 불러오는 중...</div>
+    <div class="garden-title">✨ 나의 꽃밭 ✨</div>
+    <div class="fence-garden">
+      <div class="fence-top" id="fence-top"></div>
+      <div class="garden-bed">
+        <div class="soil-line"></div>
+        <div class="flower-grid" id="flower-grid">
+          <div class="garden-empty">아직 꽃이 없어요!<br>학습 탭에서<br>첫 씨앗을 심어봐 🌰</div>
+        </div>
+      </div>
+      <div class="fence-top" id="fence-bottom"></div>
     </div>
   </div>
 
-  <!-- 학습 탭 -->
+  <!-- 학습 -->
   <div id="learn-tab" class="tab-content">
-    <div class="stage-indicator" id="stage-indicator">
-      <div class="stage-dot" id="dot-0" title="단어 보기"></div>
-      <div class="stage-dot" id="dot-1" title="플래시카드"></div>
-      <div class="stage-dot" id="dot-2" title="빈칸 채우기"></div>
-      <div class="stage-dot" id="dot-3" title="문장 만들기"></div>
+    <div class="stage-hud">
+      <div class="stage-chip" id="chip-0">① 단어보기</div>
+      <div class="stage-chip" id="chip-1">② 플래시카드</div>
+      <div class="stage-chip" id="chip-2">③ 빈칸채우기</div>
+      <div class="stage-chip" id="chip-3">④ 문장만들기</div>
     </div>
 
-    <!-- Stage 0: 단어 소개 -->
-    <div id="stage-0" class="learn-stage">
-      <div class="learn-card" id="intro-card">
-        <div style="font-size:48px;margin-bottom:0.5rem;" id="intro-plant">🌰</div>
-        <div class="word-display" id="intro-word">---</div>
-        <div class="meaning-display" id="intro-meaning">---</div>
-        <div class="hint-text" id="intro-status">새로운 씨앗을 심어요!</div>
+    <!-- Stage 0 -->
+    <div class="learn-stage" id="stage-0">
+      <div class="rpg-card">
+        <div class="card-label" id="s0-label">▼ NEW WORD ▼</div>
+        <span class="card-emoji" id="s0-emoji">🌰</span>
+        <div class="word-big" id="s0-word">---</div>
+        <div class="meaning-big" id="s0-meaning">---</div>
+        <div class="status-badge badge-new" id="s0-badge">✨ 새 단어!</div>
       </div>
-      <div style="text-align:center;">
-        <button class="btn btn-green" onclick="goStage(1)">외웠어! 다음 ▶</button>
-      </div>
-    </div>
-
-    <!-- Stage 1: 플래시카드 퀴즈 -->
-    <div id="stage-1" class="learn-stage" style="display:none;">
-      <div class="learn-card">
-        <div style="font-size:13px;color:#888;margin-bottom:0.5rem;">한글 뜻을 보고 영단어를 골라봐!</div>
-        <div class="meaning-display" id="fc-question">---</div>
-        <div class="options-grid" id="fc-options"></div>
-        <div class="feedback-box" id="fc-feedback"></div>
-        <button class="btn btn-gray btn-full" id="fc-next" style="display:none;" onclick="goStage(2)">다음 단계 ▶</button>
+      <div class="btn-row">
+        <button class="rpg-btn rpg-btn-gold" onclick="goStage(1)">외웠어! ▶</button>
       </div>
     </div>
 
-    <!-- Stage 2: 빈칸 채우기 -->
-    <div id="stage-2" class="learn-stage" style="display:none;">
-      <div class="learn-card">
-        <div style="font-size:13px;color:#888;margin-bottom:0.5rem;">빈칸에 단어를 채워봐!</div>
-        <div class="sentence-display" id="fill-sentence">---</div>
-        <div class="translation-display" id="fill-translation">---</div>
-        <input class="fill-input" type="text" id="fill-answer" placeholder="정답 입력..." autocomplete="off">
-        <div class="feedback-box" id="fill-feedback"></div>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-          <button class="btn btn-green" onclick="submitFill()">제출 ✓</button>
-          <button class="btn btn-gray" id="fill-next" style="display:none;" onclick="goStage(3)">다음 단계 ▶</button>
+    <!-- Stage 1 -->
+    <div class="learn-stage" id="stage-1" style="display:none;">
+      <div class="rpg-card">
+        <div class="card-label">▼ 뜻을 보고 영단어를 골라봐! ▼</div>
+        <div class="meaning-big" id="s1-question">---</div>
+        <div class="options-grid" id="s1-options"></div>
+        <div class="feedback" id="s1-feedback"></div>
+        <div class="btn-row">
+          <button class="rpg-btn rpg-btn-gray" id="s1-next" style="display:none;" onclick="goStage(2)">다음 ▶</button>
         </div>
       </div>
     </div>
 
-    <!-- Stage 3: 문장 만들기 -->
-    <div id="stage-3" class="learn-stage" style="display:none;">
-      <div class="learn-card">
-        <div style="font-size:13px;color:#888;margin-bottom:0.5rem;">이 단어로 짧은 영어 문장을 만들어봐!</div>
-        <div class="word-display" id="write-word" style="font-size:16px;margin-bottom:0.3rem;">---</div>
-        <div class="meaning-display" id="write-meaning" style="font-size:14px;margin-bottom:1rem;">---</div>
-        <textarea id="write-answer" placeholder="여기에 영어 문장을 써봐..."></textarea>
-        <div class="feedback-box" id="write-feedback"></div>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-          <button class="btn btn-green" onclick="submitWrite()">제출 ✓</button>
-          <button class="btn btn-primary" id="write-next" style="display:none;" onclick="startLearn()">새 단어 심기 🌱</button>
+    <!-- Stage 2 -->
+    <div class="learn-stage" id="stage-2" style="display:none;">
+      <div class="rpg-card">
+        <div class="card-label">▼ 빈칸에 단어를 채워봐! ▼</div>
+        <div class="sentence-box" id="s2-sentence">---</div>
+        <div class="trans-box" id="s2-trans">---</div>
+        <input class="rpg-fill" type="text" id="s2-answer" placeholder="정답 입력..." autocomplete="off">
+        <div class="feedback" id="s2-feedback"></div>
+        <div class="btn-row">
+          <button class="rpg-btn rpg-btn-green" onclick="submitFill()">제출 ✓</button>
+          <button class="rpg-btn rpg-btn-gray" id="s2-next" style="display:none;" onclick="goStage(3)">다음 ▶</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 3 -->
+    <div class="learn-stage" id="stage-3" style="display:none;">
+      <div class="rpg-card">
+        <div class="card-label">▼ 이 단어로 영어 문장을 만들어봐! ▼</div>
+        <div class="word-big" id="s3-word" style="font-size:16px;margin-bottom:4px;">---</div>
+        <div class="meaning-big" id="s3-meaning" style="font-size:15px;margin-bottom:1rem;">---</div>
+        <textarea class="rpg-textarea" id="s3-answer" placeholder="여기에 영어 문장을 써봐..."></textarea>
+        <div class="feedback" id="s3-feedback"></div>
+        <div class="btn-row">
+          <button class="rpg-btn rpg-btn-green" onclick="submitWrite()">제출 ✓</button>
+          <button class="rpg-btn rpg-btn-gold" id="s3-next" style="display:none;" onclick="startLearn()">🌱 새 단어 심기</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 복습 탭 -->
+  <!-- 복습 -->
   <div id="review-tab" class="tab-content">
-    <div class="review-title">🥀 시든 단어 복습</div>
-
-    <!-- 플래시카드 영역 -->
-    <div id="review-flashcard-area" style="display:none;">
-      <div class="flashcard-container" onclick="flipCard()">
-        <div class="flashcard" id="review-card">
-          <div class="flashcard-face">
-            <div class="flashcard-word" id="rc-word">---</div>
-            <div class="flashcard-hint">클릭해서 뒤집기</div>
+    <div class="tab-title">🥀 시든 꽃 복습</div>
+    <div id="review-fc-area" style="display:none;">
+      <div class="fc-wrap" onclick="flipCard()">
+        <div class="fc-inner" id="fc-card">
+          <div class="fc-face">
+            <div class="fc-word" id="fc-word">---</div>
+            <div class="fc-hint">탭해서 뒤집기</div>
           </div>
-          <div class="flashcard-face flashcard-back">
-            <div class="flashcard-meaning" id="rc-meaning">---</div>
-            <div class="flashcard-hint">뜻 확인!</div>
+          <div class="fc-face fc-back">
+            <div class="fc-meaning" id="fc-meaning">---</div>
+            <div class="fc-hint">뜻 확인!</div>
           </div>
         </div>
       </div>
-      <div class="review-nav">
-        <button class="btn btn-gray" onclick="prevCard()">◀</button>
-        <span class="review-counter" id="review-counter">0 / 0</span>
-        <button class="btn btn-gray" onclick="nextCard()">▶</button>
+      <div class="fc-nav">
+        <button class="rpg-btn rpg-btn-gray" style="width:60px;padding:0.5rem;" onclick="prevCard()">◀</button>
+        <span class="fc-counter" id="fc-counter">0 / 0</span>
+        <button class="rpg-btn rpg-btn-gray" style="width:60px;padding:0.5rem;" onclick="nextCard()">▶</button>
       </div>
     </div>
-
-    <!-- 시든 단어 목록 -->
-    <div class="wilted-list" id="wilted-list">
-      <div class="loading">시든 단어 불러오는 중...</div>
-    </div>
+    <div id="wilted-list"><div class="loading">불러오는 중...</div></div>
   </div>
 
-  <!-- 랭킹 탭 -->
+  <!-- 랭킹 -->
   <div id="ranking-tab" class="tab-content">
-    <div class="review-title" style="background:#E8F5E9;padding-top:1rem;">🏆 랭킹</div>
+    <div class="tab-title" style="padding-top:1rem;">🏆 RANKING</div>
     <div id="ranking-list"><div class="loading">불러오는 중...</div></div>
   </div>
+</div>
+
+<!-- 레벨업 오버레이 -->
+<div id="levelup-overlay">
+  <div class="levelup-emoji" id="lu-emoji">🌸</div>
+  <div class="levelup-text" id="lu-text">LEVEL UP!</div>
+  <br>
+  <button class="rpg-btn rpg-btn-gold" style="min-width:160px;margin-top:1rem;" onclick="closeLevelup()">계속하기 ▶</button>
 </div>
 
 <!-- 식물 팝업 -->
 <div id="plant-popup">
   <div class="popup-box">
-    <div style="font-size:56px;margin-bottom:0.5rem;" id="popup-plant-emoji">🌱</div>
+    <span class="popup-emoji" id="popup-emoji">🌸</span>
     <div class="popup-word" id="popup-word">---</div>
     <div class="popup-meaning" id="popup-meaning">---</div>
-    <div class="popup-stage" id="popup-stage">단계: ---</div>
-    <div class="stage-bar" id="popup-bar"></div>
-    <button class="btn btn-gray" onclick="closePlantPopup()">닫기</button>
+    <div class="popup-stage" id="popup-stage">---</div>
+    <div class="stage-pips" id="popup-pips"></div>
+    <button class="rpg-btn rpg-btn-gray" onclick="closePlantPopup()">닫기</button>
   </div>
 </div>
 
@@ -709,29 +932,31 @@
 <div id="toast"></div>
 
 <script>
-// ── 픽셀아트 식물 이모지 ─────────────────────────────────
-const PLANT_EMOJI = {
-  seed:   '🌰',
-  sprout: '🌱',
-  leaf:   '🌿',
-  flower: '🌸',
-  fruit:  '🍎',
-  wilted: '🥀',
+// ── 단어별 이모지 ─────────────────────────────────────────
+const WORD_EMOJI = {
+  apple:'🍎',banana:'🍌',ball:'⚽',bear:'🐻',bed:'🛏️',bird:'🐦',book:'📚',
+  cat:'🐱',dog:'🐶',egg:'🥚',fish:'🐟',flower:'🌸',hand:'✋',hat:'🎩',
+  house:'🏠',milk:'🥛',moon:'🌙',nose:'👃',orange:'🍊',pig:'🐷',rain:'🌧️',
+  sun:'☀️',tree:'🌳',water:'💧',big:'🔍',happy:'😊',hot:'🔥',red:'❤️',
+  run:'🏃',eat:'🍽️',bread:'🍞',bus:'🚌',cake:'🎂',chair:'🪑',cloud:'☁️',
+  cold:'🥶',door:'🚪',duck:'🦆',ear:'👂',eye:'👁️',face:'😄',farm:'🌾',
+  friend:'👫',frog:'🐸',green:'💚',jump:'🦘',king:'👑',lion:'🦁',morning:'🌅',
+  mother:'👩',pencil:'✏️',rabbit:'🐰',school:'🏫',small:'🔬',snow:'❄️',
+  star:'⭐',swim:'🏊',toy:'🧸',yellow:'💛',zoo:'🦒',
 };
 
-const STAGE_NAMES = ['씨앗', '새싹', '잎', '꽃', '열매'];
-const STAGE_EMOJIS = ['🌰','🌱','🌿','🌸','🍎'];
+const STAGE_EMOJI = ['🌰','🌱','🌿','🌸','🌺'];
+const STAGE_NAME  = ['씨앗','새싹','잎','꽃','열매'];
+const WILTED_EMOJI = '🥀';
 
-// ── 상태 ─────────────────────────────────────────────────
+// ── 상태 ────────────────────────────────────────────────
 let currentUser = null;
 let currentWord = null;
-let currentStage = 0;
-let currentFillAnswer = '';
 let reviewWords = [];
 let reviewIndex = 0;
 let cardFlipped = false;
 
-// ── 유틸 ─────────────────────────────────────────────────
+// ── 유틸 ────────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -739,14 +964,13 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-function setDots(active) {
+function setChips(active) {
   for (let i = 0; i < 4; i++) {
-    const d = document.getElementById('dot-' + i);
-    d.className = 'stage-dot' + (i < active ? ' done' : i === active ? ' active' : '');
+    const c = document.getElementById('chip-' + i);
+    c.className = 'stage-chip' + (i < active ? ' done' : i === active ? ' active' : '');
   }
 }
 
-// ── API ───────────────────────────────────────────────────
 async function api(path, method='GET', body=null) {
   const opts = { method, headers: {'Content-Type':'application/json'} };
   if (body) opts.body = JSON.stringify(body);
@@ -754,175 +978,90 @@ async function api(path, method='GET', body=null) {
   return res.json();
 }
 
-// ── 로그인 ────────────────────────────────────────────────
+// ── 로그인 ──────────────────────────────────────────────
 async function login() {
   const nick = document.getElementById('nickname-input').value.trim();
   if (!nick) { showToast('닉네임을 입력해줘!'); return; }
-  const data = await api('/api/login', 'POST', { nickname: nick });
+  const data = await api('/api/login', 'POST', {nickname: nick});
   if (data.error) { showToast(data.error); return; }
   currentUser = data.user;
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('main-screen').style.display = 'block';
-  updateTopBar();
+  updateHUD();
+  buildFence();
   loadGarden();
   startLearn();
 }
 
-function updateTopBar() {
-  document.getElementById('top-name').textContent = currentUser.nickname;
-  document.getElementById('top-score').textContent = '⭐ ' + currentUser.score;
+function updateHUD() {
+  if (!currentUser) return;
+  document.getElementById('hud-name').textContent = currentUser.nickname;
+  document.getElementById('hud-score').textContent = '⭐ ' + currentUser.score;
+  const plants = currentUser.word_plants || {};
+  const bloomed = Object.values(plants).filter(p => p.stage >= 3).length;
+  document.getElementById('hud-progress').textContent = '🌸 ' + bloomed + '개';
 }
 
-// ── 탭 전환 ───────────────────────────────────────────────
-function switchTab(name) {
+// ── 탭 ──────────────────────────────────────────────────
+function switchTab(name, btn) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
   document.getElementById(name + '-tab').classList.add('active');
-  event.target.classList.add('active');
-
+  btn.classList.add('active');
   if (name === 'garden') loadGarden();
   if (name === 'review') loadReview();
   if (name === 'ranking') loadRanking();
 }
 
-// ── 정원 ─────────────────────────────────────────────────
+// ── 울타리 빌드 ─────────────────────────────────────────
+function buildFence() {
+  ['fence-top','fence-bottom'].forEach(id => {
+    const el = document.getElementById(id);
+    el.innerHTML = '';
+    for (let i = 0; i < 8; i++) {
+      const post = document.createElement('div');
+      post.className = 'fence-post';
+      const rail = document.createElement('div');
+      rail.className = 'fence-rail';
+      el.appendChild(post);
+      if (i < 7) el.appendChild(rail);
+    }
+  });
+}
+
+// ── 정원 ────────────────────────────────────────────────
 async function loadGarden() {
   const garden = await api('/api/garden');
-  const grid = document.getElementById('garden-grid');
+  const grid = document.getElementById('flower-grid');
   if (!garden.length) {
-    grid.innerHTML = '<div class="loading" style="grid-column:1/-1">아직 단어를 하나도 심지 않았어요!<br>학습 탭에서 첫 씨앗을 심어봐 🌰</div>';
+    grid.innerHTML = '<div class="garden-empty">아직 꽃이 없어요!<br>학습 탭에서<br>첫 씨앗을 심어봐 🌰</div>';
     return;
   }
   grid.innerHTML = garden.map(p => {
-    const emoji = p.wilted ? PLANT_EMOJI.wilted : STAGE_EMOJIS[p.stage];
-    return `<div class="plant-slot" onclick='showPlantPopup(${JSON.stringify(p)})'>
-      <canvas class="plant-canvas" id="pc-${p.word}" width="64" height="64"></canvas>
-      <div class="plant-label">${p.word}</div>
+    const emoji = p.wilted ? WILTED_EMOJI : STAGE_EMOJI[p.stage];
+    return `<div class="flower-slot" onclick='showPlantPopup(${JSON.stringify(p)})'>
+      <div style="font-size:36px;line-height:1;margin-bottom:2px;filter:drop-shadow(1px 1px 0 rgba(0,0,0,0.5))">${emoji}</div>
+      <div class="flower-name">${p.word}</div>
     </div>`;
   }).join('');
-  garden.forEach(p => drawPlant(p));
 }
 
-function drawPlant(p) {
-  const canvas = document.getElementById('pc-' + p.word);
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0,0,64,64);
-  const S = 4; // pixel size
-
-  // 땅
-  ctx.fillStyle = '#8B5E3C';
-  ctx.fillRect(0, 48, 64, 16);
-  ctx.fillStyle = '#6D4C41';
-  ctx.fillRect(0, 52, 64, 4);
-
-  if (p.wilted) {
-    drawPixelWilted(ctx, S);
-    return;
-  }
-
-  switch(p.stage) {
-    case 0: drawPixelSeed(ctx, S); break;
-    case 1: drawPixelSprout(ctx, S); break;
-    case 2: drawPixelLeaf(ctx, S); break;
-    case 3: drawPixelFlower(ctx, S); break;
-    case 4: drawPixelFruit(ctx, S); break;
-  }
-}
-
-function px(ctx, x, y, w, h, color) {
-  ctx.fillStyle = color;
-  ctx.fillRect(x*4, y*4, w*4, h*4);
-}
-
-function drawPixelSeed(ctx, S) {
-  px(ctx, 7,10,2,2,'#8B5E3C');
-  px(ctx, 6,11,4,3,'#A1887F');
-  px(ctx, 7,11,2,2,'#6D4C41');
-}
-
-function drawPixelSprout(ctx, S) {
-  // 줄기
-  px(ctx,7,6,2,6,'#558B2F');
-  // 잎 왼쪽
-  px(ctx,4,5,3,2,'#66BB6A');
-  // 잎 오른쪽
-  px(ctx,9,4,3,2,'#81C784');
-  // 뿌리 힌트
-  px(ctx,7,11,2,1,'#6D4C41');
-}
-
-function drawPixelLeaf(ctx, S) {
-  // 줄기
-  px(ctx,7,3,2,9,'#558B2F');
-  // 큰 잎 왼
-  px(ctx,3,5,4,3,'#4CAF50');
-  px(ctx,2,6,2,2,'#66BB6A');
-  // 큰 잎 오
-  px(ctx,9,3,4,3,'#388E3C');
-  px(ctx,12,4,2,2,'#4CAF50');
-}
-
-function drawPixelFlower(ctx, S) {
-  // 줄기
-  px(ctx,7,4,2,8,'#558B2F');
-  // 잎들
-  px(ctx,3,7,4,2,'#4CAF50');
-  px(ctx,9,6,4,2,'#388E3C');
-  // 꽃잎
-  px(ctx,6,0,4,2,'#F48FB1');
-  px(ctx,6,4,4,2,'#F48FB1');
-  px(ctx,4,2,2,3,'#F48FB1');
-  px(ctx,10,2,2,3,'#F48FB1');
-  // 꽃 중심
-  px(ctx,6,1,4,3,'#FFD54F');
-  px(ctx,7,0,2,4,'#FFD54F');
-}
-
-function drawPixelFruit(ctx, S) {
-  // 줄기
-  px(ctx,7,5,2,7,'#558B2F');
-  // 잎들
-  px(ctx,3,7,4,2,'#4CAF50');
-  px(ctx,9,6,4,2,'#388E3C');
-  // 열매 (빨간 사과 느낌)
-  px(ctx,5,0,6,1,'#66BB6A');
-  px(ctx,4,1,8,5,'#E53935');
-  px(ctx,3,2,9,4,'#EF5350');
-  px(ctx,5,1,6,5,'#E53935');
-  // 하이라이트
-  px(ctx,6,2,2,2,'#EF9A9A');
-  // 꼭지
-  px(ctx,7,0,2,1,'#558B2F');
-}
-
-function drawPixelWilted(ctx, S) {
-  // 줄기 (회색)
-  px(ctx,7,5,2,7,'#9E9E9E');
-  // 시든 잎들
-  px(ctx,3,8,4,2,'#78909C');
-  px(ctx,9,7,4,2,'#78909C');
-  // 시든 꽃
-  px(ctx,5,2,6,2,'#B0BEC5');
-  px(ctx,6,1,4,4,'#90A4AE');
-}
-
-// ── 식물 팝업 ─────────────────────────────────────────────
+// ── 팝업 ────────────────────────────────────────────────
 function showPlantPopup(p) {
-  const emoji = p.wilted ? PLANT_EMOJI.wilted : STAGE_EMOJIS[p.stage];
-  document.getElementById('popup-plant-emoji').textContent = emoji;
+  const emoji = p.wilted ? WILTED_EMOJI : STAGE_EMOJI[p.stage];
+  document.getElementById('popup-emoji').textContent = emoji;
   document.getElementById('popup-word').textContent = p.word;
   document.getElementById('popup-meaning').textContent = p.meaning;
-  document.getElementById('popup-stage').textContent = p.wilted ? '🥀 시들었어요 - 복습이 필요해!' : `${STAGE_NAMES[p.stage]} 단계 (${p.stage}/4)`;
-
-  const bar = document.getElementById('popup-bar');
-  bar.innerHTML = Array.from({length:4}, (_,i) => {
-    let cls = 'stage-pip';
+  document.getElementById('popup-stage').textContent = p.wilted
+    ? '🥀 시들었어요 - 복습이 필요해!'
+    : STAGE_NAME[p.stage] + ' 단계 (' + p.stage + '/4)';
+  const pips = document.getElementById('popup-pips');
+  pips.innerHTML = Array.from({length:4},(_,i)=>{
+    let cls = 'pip';
     if (p.wilted) cls += ' wilted-pip';
     else if (i < p.stage) cls += ' filled';
-    return `<div class="${cls}"></div>`;
+    return '<div class="'+cls+'"></div>';
   }).join('');
-
   document.getElementById('plant-popup').classList.add('show');
 }
 
@@ -930,151 +1069,154 @@ function closePlantPopup() {
   document.getElementById('plant-popup').classList.remove('show');
 }
 
-// ── 학습 흐름 ─────────────────────────────────────────────
-async function startLearn() {
-  currentStage = 0;
-  showLearnStage(0);
-  setDots(0);
+// ── 레벨업 오버레이 ─────────────────────────────────────
+function showLevelup(stage) {
+  const msgs = ['','🌱 새싹이 돋았어!','🌿 잎이 자랐어!','🌸 꽃이 피었어!','🌺 열매가 열렸어! 완전 마스터!'];
+  const emojis = ['','🌱','🌿','🌸','🌺'];
+  document.getElementById('lu-emoji').textContent = emojis[stage] || '🌸';
+  document.getElementById('lu-text').textContent = msgs[stage] || 'LEVEL UP!';
+  document.getElementById('levelup-overlay').classList.add('show');
+}
 
+function closeLevelup() {
+  document.getElementById('levelup-overlay').classList.remove('show');
+}
+
+// ── 학습 ────────────────────────────────────────────────
+async function startLearn() {
+  setChips(0);
+  showStage(0);
   const data = await api('/api/learn/start');
   if (data.error) { showToast(data.error); return; }
   currentWord = data.word;
 
-  document.getElementById('intro-word').textContent = data.word;
-  document.getElementById('intro-meaning').textContent = data.meaning;
+  document.getElementById('s0-word').textContent = data.word;
+  document.getElementById('s0-meaning').textContent = data.meaning;
+  document.getElementById('s0-emoji').textContent = WORD_EMOJI[data.word] || '📝';
 
-  let status = '';
-  let emoji = '🌰';
   if (data.is_wilted) {
-    status = '🥀 시든 단어예요 - 다시 외워봐요!';
-    emoji = '🥀';
+    document.getElementById('s0-badge').className = 'status-badge badge-review';
+    document.getElementById('s0-badge').textContent = '🥀 복습 단어!';
+    document.getElementById('s0-label').textContent = '▼ REVIEW ▼';
   } else if (data.is_new) {
-    status = '✨ 새 씨앗을 심어요!';
-    emoji = '🌰';
+    document.getElementById('s0-badge').className = 'status-badge badge-new';
+    document.getElementById('s0-badge').textContent = '✨ 새 단어!';
+    document.getElementById('s0-label').textContent = '▼ NEW WORD ▼';
   } else {
-    const stage = data.stage >= 0 ? data.stage : 0;
-    emoji = STAGE_EMOJIS[stage];
-    status = `${STAGE_NAMES[stage]} 단계 - 계속 성장 중!`;
+    document.getElementById('s0-badge').className = 'status-badge badge-grow';
+    document.getElementById('s0-badge').textContent = '🌱 성장 중!';
+    document.getElementById('s0-label').textContent = '▼ GROWING ▼';
   }
-  document.getElementById('intro-plant').textContent = emoji;
-  document.getElementById('intro-status').textContent = status;
 }
 
-function showLearnStage(n) {
+function showStage(n) {
   document.querySelectorAll('.learn-stage').forEach(el => el.style.display = 'none');
   document.getElementById('stage-' + n).style.display = 'block';
 }
 
 async function goStage(n) {
-  currentStage = n;
-  setDots(n);
-  showLearnStage(n);
-
+  setChips(n);
+  showStage(n);
   if (n === 1) await loadFlashcard();
   if (n === 2) await loadFill();
   if (n === 3) await loadWrite();
 }
 
-// Stage 1: 플래시카드 퀴즈
+// Stage 1
 async function loadFlashcard() {
   const data = await api('/api/learn/flashcard');
-  document.getElementById('fc-question').textContent = data.question;
-  document.getElementById('fc-feedback').style.display = 'none';
-  document.getElementById('fc-next').style.display = 'none';
-
-  const container = document.getElementById('fc-options');
-  container.innerHTML = data.options.map(o =>
-    `<button class="option-btn" onclick="selectOption(this,'${o.word}')">${o.word}</button>`
+  document.getElementById('s1-question').textContent = data.question;
+  document.getElementById('s1-feedback').style.display = 'none';
+  document.getElementById('s1-next').style.display = 'none';
+  const cont = document.getElementById('s1-options');
+  cont.innerHTML = data.options.map(o =>
+    `<button class="opt-btn" onclick="selectOpt(this,'${o.word}')">${o.word}</button>`
   ).join('');
 }
 
-async function selectOption(btn, selected) {
-  const buttons = document.querySelectorAll('.option-btn');
-  buttons.forEach(b => b.disabled = true);
-
-  const result = await api('/api/answer', 'POST', { stage_type: 'flashcard', answer: selected });
-
+async function selectOpt(btn, selected) {
+  document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+  const result = await api('/api/answer','POST',{stage_type:'flashcard',answer:selected});
   if (result.correct) {
     btn.classList.add('correct');
   } else {
     btn.classList.add('wrong');
-    buttons.forEach(b => { if (b.textContent === result.correct_answer) b.classList.add('correct'); });
+    document.querySelectorAll('.opt-btn').forEach(b => {
+      if (b.textContent === result.correct_answer) b.classList.add('correct');
+    });
   }
-
-  showFeedback('fc-feedback', result);
-  document.getElementById('fc-next').style.display = 'block';
-  if (result.user) { currentUser = result.user; updateTopBar(); }
+  showFeedback('s1-feedback', result);
+  document.getElementById('s1-next').style.display = 'block';
+  if (result.user) { currentUser = result.user; updateHUD(); }
+  if (result.leveled_up) { loadGarden(); showLevelup(result.plant.stage); }
 }
 
-// Stage 2: 빈칸 채우기
+// Stage 2
 async function loadFill() {
   const data = await api('/api/learn/fill');
-  if (data.error) { showToast('문장 데이터가 없어요! 다음으로 넘어갈게요.'); goStage(3); return; }
-  document.getElementById('fill-sentence').textContent = data.sentence;
-  document.getElementById('fill-translation').textContent = data.translation;
-  document.getElementById('fill-answer').value = '';
-  document.getElementById('fill-feedback').style.display = 'none';
-  document.getElementById('fill-next').style.display = 'none';
-  document.getElementById('fill-answer').focus();
+  if (data.error) { showToast('문장 데이터 없음! 다음으로~'); goStage(3); return; }
+  document.getElementById('s2-sentence').textContent = data.sentence;
+  document.getElementById('s2-trans').textContent = data.translation;
+  document.getElementById('s2-answer').value = '';
+  document.getElementById('s2-feedback').style.display = 'none';
+  document.getElementById('s2-next').style.display = 'none';
+  document.getElementById('s2-answer').focus();
 }
 
 async function submitFill() {
-  const answer = document.getElementById('fill-answer').value.trim();
+  const answer = document.getElementById('s2-answer').value.trim();
   if (!answer) { showToast('답을 입력해줘!'); return; }
-  const result = await api('/api/answer', 'POST', { stage_type: 'fill', answer });
-  showFeedback('fill-feedback', result);
-  document.getElementById('fill-next').style.display = 'block';
-  if (result.user) { currentUser = result.user; updateTopBar(); }
+  const result = await api('/api/answer','POST',{stage_type:'fill',answer});
+  showFeedback('s2-feedback', result);
+  document.getElementById('s2-next').style.display = 'block';
+  if (result.user) { currentUser = result.user; updateHUD(); }
+  if (result.leveled_up) { loadGarden(); showLevelup(result.plant.stage); }
 }
 
-// Stage 3: 문장 만들기
+// Stage 3
 async function loadWrite() {
   const data = await api('/api/learn/write');
-  document.getElementById('write-word').textContent = data.word;
-  document.getElementById('write-meaning').textContent = data.meaning;
-  document.getElementById('write-answer').value = '';
-  document.getElementById('write-feedback').style.display = 'none';
-  document.getElementById('write-next').style.display = 'none';
+  document.getElementById('s3-word').textContent = data.word;
+  document.getElementById('s3-meaning').textContent = data.meaning;
+  document.getElementById('s3-answer').value = '';
+  document.getElementById('s3-feedback').style.display = 'none';
+  document.getElementById('s3-next').style.display = 'none';
 }
 
 async function submitWrite() {
-  const answer = document.getElementById('write-answer').value.trim();
+  const answer = document.getElementById('s3-answer').value.trim();
   if (!answer) { showToast('문장을 써봐!'); return; }
-  const result = await api('/api/answer', 'POST', { stage_type: 'write', answer });
-  showFeedback('write-feedback', result);
-  document.getElementById('write-next').style.display = 'block';
-  if (result.user) { currentUser = result.user; updateTopBar(); }
-  if (result.leveled_up) loadGarden();
+  const result = await api('/api/answer','POST',{stage_type:'write',answer});
+  showFeedback('s3-feedback', result);
+  document.getElementById('s3-next').style.display = 'block';
+  if (result.user) { currentUser = result.user; updateHUD(); }
+  if (result.leveled_up) { loadGarden(); showLevelup(result.plant.stage); }
 }
 
 function showFeedback(id, result) {
   const box = document.getElementById(id);
   box.style.display = 'block';
-  box.className = 'feedback-box ' + (result.correct ? 'correct' : 'wrong');
+  box.className = 'feedback ' + (result.correct ? 'correct' : 'wrong');
   box.textContent = result.message;
 }
 
-// ── 복습 탭 ───────────────────────────────────────────────
+// ── 복습 ────────────────────────────────────────────────
 async function loadReview() {
   const words = await api('/api/review');
   reviewWords = words;
   reviewIndex = 0;
-
-  const listEl = document.getElementById('wilted-list');
-  const fcArea = document.getElementById('review-flashcard-area');
-
+  const fcArea = document.getElementById('review-fc-area');
+  const list = document.getElementById('wilted-list');
   if (!words.length) {
     fcArea.style.display = 'none';
-    listEl.innerHTML = '<div class="loading">🌿 시든 단어가 없어요!<br>정원이 건강해요!</div>';
+    list.innerHTML = '<div class="loading">🌿 시든 꽃이 없어요!<br>정원이 건강해요!</div>';
     return;
   }
-
   fcArea.style.display = 'block';
-  updateFlashcard();
-
-  listEl.innerHTML = words.map(w =>
+  updateFC();
+  list.innerHTML = words.map(w =>
     `<div class="wilted-item">
-      <div class="wilted-emoji">🥀</div>
+      <span style="font-size:24px">${WORD_EMOJI[w.word]||'🥀'}</span>
       <div>
         <div class="wilted-word">${w.word}</div>
         <div class="wilted-meaning">${w.meaning}</div>
@@ -1083,52 +1225,44 @@ async function loadReview() {
   ).join('');
 }
 
-function updateFlashcard() {
+function updateFC() {
   const w = reviewWords[reviewIndex];
   if (!w) return;
-  document.getElementById('rc-word').textContent = w.word;
-  document.getElementById('rc-meaning').textContent = w.meaning;
-  document.getElementById('review-counter').textContent = `${reviewIndex+1} / ${reviewWords.length}`;
-  const card = document.getElementById('review-card');
-  card.classList.remove('flipped');
+  document.getElementById('fc-word').textContent = w.word;
+  document.getElementById('fc-meaning').textContent = w.meaning;
+  document.getElementById('fc-counter').textContent = (reviewIndex+1)+' / '+reviewWords.length;
+  document.getElementById('fc-card').classList.remove('flipped');
   cardFlipped = false;
 }
 
 function flipCard() {
-  const card = document.getElementById('review-card');
   cardFlipped = !cardFlipped;
-  card.classList.toggle('flipped', cardFlipped);
+  document.getElementById('fc-card').classList.toggle('flipped', cardFlipped);
 }
 
-function nextCard() {
-  if (reviewIndex < reviewWords.length - 1) { reviewIndex++; updateFlashcard(); }
-}
+function nextCard() { if (reviewIndex < reviewWords.length-1) { reviewIndex++; updateFC(); } }
+function prevCard() { if (reviewIndex > 0) { reviewIndex--; updateFC(); } }
 
-function prevCard() {
-  if (reviewIndex > 0) { reviewIndex--; updateFlashcard(); }
-}
-
-// ── 랭킹 ─────────────────────────────────────────────────
+// ── 랭킹 ────────────────────────────────────────────────
 async function loadRanking() {
   const data = await api('/api/ranking');
   const medals = ['🥇','🥈','🥉'];
-  document.getElementById('ranking-list').innerHTML = data.map((u,i) =>
-    `<div class="ranking-item">
-      <div class="rank-num">${medals[i] || (i+1)+'.'}</div>
-      <div>
+  document.getElementById('ranking-list').innerHTML = data.map((u,i)=>
+    `<div class="rank-item">
+      <div class="rank-num">${medals[i]||(i+1)+'.'}
+</div>
+      <div style="flex:1">
         <div class="rank-name">${u.nickname}</div>
-        <div style="font-size:11px;color:#888;">🍎 열매 ${u.plants_grown}개</div>
+        <div class="rank-flowers">🌺 열매 ${u.plants_grown}개</div>
       </div>
       <div class="rank-score">⭐${u.score}</div>
     </div>`
   ).join('') || '<div class="loading">아직 플레이어가 없어요!</div>';
 }
 
-// ── Enter 키 지원 ─────────────────────────────────────────
+// ── 키보드 ───────────────────────────────────────────────
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    if (document.getElementById('login-screen').style.display !== 'none') login();
-  }
+  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') login();
 });
 </script>
 </body>
