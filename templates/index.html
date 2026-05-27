@@ -2,552 +2,122 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
-body{
-  font-family:'Nunito',sans-serif;
-  background:#7bc47f;
-  min-height:100vh;
-  overflow-x:hidden;
-}
-
-/* 하늘+땅 배경 */
-.world{
-  min-height:100vh;
-  background:
-    linear-gradient(180deg, #b8e8f5 0%, #d4f0fa 35%, #c8ebb0 55%, #7bc47f 65%, #5aab5e 100%);
-  position:relative;
-}
-
-/* 땅 물결 */
-.world::before{
-  content:'';
-  position:absolute;
-  top:52%;
-  left:-5%;
-  width:110%;
-  height:80px;
-  background:#a8d97c;
-  border-radius:50% 50% 0 0 / 80px 80px 0 0;
-  z-index:0;
-}
-
-.screen{display:none;min-height:100vh;position:relative;z-index:1;}
-.screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center;}
-
-/* ── 시작 화면 ── */
-#startScreen{padding:32px 20px;}
-
-.acnh-board{
-  background:#f5e6c8;
-  border:4px solid #c8a96e;
-  border-radius:20px;
-  padding:28px 36px 24px;
-  text-align:center;
-  box-shadow:0 6px 0 #a07840, 0 8px 24px rgba(0,0,0,0.18);
-  max-width:360px;
-  width:100%;
-  margin-bottom:24px;
-}
-
-.acnh-icon{font-size:64px;display:block;margin-bottom:8px;animation:leafSway 3s ease-in-out infinite;}
-@keyframes leafSway{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
-
-.acnh-title{
-  font-family:'Press Start 2P',monospace;
-  font-size:20px;
-  color:#4a7c3f;
-  text-shadow:2px 2px 0 #b8dba0;
-  line-height:1.6;
-  letter-spacing:1px;
-  margin-bottom:6px;
-}
-.acnh-sub{
-  font-size:14px;
-  font-weight:700;
-  color:#7a5c2e;
-  margin-bottom:0;
-}
-
-.start-btn{
-  display:block;
-  width:100%;
-  max-width:240px;
-  margin:0 auto 12px;
-  padding:14px 0;
-  background:#5aab5e;
-  color:#fff;
-  border:3px solid #3d8040;
-  border-radius:50px;
-  font-family:'Press Start 2P',monospace;
-  font-size:11px;
-  cursor:pointer;
-  box-shadow:0 4px 0 #2c6030;
-  transition:all .12s;
-  letter-spacing:1px;
-}
-.start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 #2c6030;}
-.start-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #2c6030;}
-
-.garden-link-btn{
-  display:block;
-  width:100%;
-  max-width:240px;
-  margin:0 auto;
-  padding:11px 0;
-  background:#f5e6c8;
-  color:#7a5c2e;
-  border:3px solid #c8a96e;
-  border-radius:50px;
-  font-family:'Nunito',sans-serif;
-  font-size:14px;
-  font-weight:800;
-  cursor:pointer;
-  box-shadow:0 3px 0 #a07840;
-  transition:all .12s;
-}
-.garden-link-btn:hover{transform:translateY(-2px);}
-.garden-link-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #a07840;}
-
-.stat-row{
-  display:flex;
-  gap:10px;
-  margin-top:16px;
-  flex-wrap:wrap;
-  justify-content:center;
-  max-width:360px;
-}
-.stat-chip{
-  background:rgba(255,255,255,0.75);
-  border:2px solid #c8dba8;
-  border-radius:50px;
-  padding:6px 14px;
-  font-size:12px;
-  font-weight:800;
-  color:#4a6630;
-}
-
-/* 나뭇잎 장식 */
-.leaf-deco{
-  position:absolute;
-  font-size:28px;
-  opacity:.7;
-  pointer-events:none;
-  animation:leafFloat 4s ease-in-out infinite;
-}
-@keyframes leafFloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-10px) rotate(12deg);}}
-
-/* ── 공통 상단바 ── */
-.top-bar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  width:100%;
-  max-width:520px;
-  margin-bottom:14px;
-  background:#f5e6c8;
-  border:3px solid #c8a96e;
-  border-radius:16px;
-  padding:10px 16px;
-  box-shadow:0 3px 0 #a07840;
-}
-.tb-btn{
-  background:none;border:none;cursor:pointer;
-  font-size:20px;line-height:1;
-}
-.progress-wrap{flex:1;margin:0 12px;}
-.prog-bg{background:#e0cfa0;border-radius:8px;height:10px;overflow:hidden;border:1.5px solid #c8a96e;}
-.prog-fill{height:100%;background:#5aab5e;border-radius:8px;transition:width .4s;}
-.prog-label{font-size:11px;font-weight:800;color:#7a5c2e;margin-top:3px;}
-.score-chip{
-  background:#5aab5e;color:#fff;
-  border:2px solid #3d8040;border-radius:50px;
-  padding:5px 12px;font-size:13px;font-weight:800;
-  box-shadow:0 2px 0 #2c6030;
-}
-
-/* ── 단어카드 ── */
-.word-card{
-  background:#fffdf5;
-  border:3px solid #c8a96e;
-  border-radius:20px;
-  padding:28px 28px 22px;
-  text-align:center;
-  box-shadow:0 4px 0 #a07840, 0 6px 16px rgba(0,0,0,0.1);
-  width:100%;
-  max-width:420px;
-  margin-bottom:14px;
-}
-.mode-tag{
-  display:inline-block;
-  padding:3px 12px;
-  border-radius:50px;
-  font-size:10px;
-  font-weight:800;
-  letter-spacing:1px;
-  margin-bottom:14px;
-  text-transform:uppercase;
-}
-.tag-flash{background:#d4f0c8;color:#3d6e2a;border:2px solid #8cc87a;}
-.tag-fill {background:#fde8b8;color:#7a4a10;border:2px solid #e0a040;}
-.tag-eng  {background:#ddeeff;color:#2a4e7a;border:2px solid #6aa0d0;}
-
-.word-main{
-  font-family:'Press Start 2P',monospace;
-  font-size:28px;
-  color:#3a2a10;
-  margin-bottom:6px;
-  letter-spacing:1px;
-  line-height:1.4;
-}
-.word-meaning{font-size:20px;font-weight:800;color:#7a5c2e;margin-bottom:10px;}
-.sentence-box{
-  background:#f0ead8;
-  border:2px solid #d4c090;
-  border-radius:12px;
-  padding:12px 14px;
-  font-size:14px;
-  font-weight:700;
-  color:#3a2a10;
-  line-height:1.9;
-  margin-top:10px;
-  text-align:left;
-}
-.sentence-ko{font-size:12px;color:#7a6040;font-weight:700;margin-top:4px;}
-
-/* ── 입력/버튼 ── */
-.input-row{display:flex;gap:10px;width:100%;max-width:420px;margin-bottom:10px;}
-.ans-input{
-  flex:1;padding:12px 16px;
-  border:3px solid #c8a96e;border-radius:14px;
-  font-family:'Nunito',sans-serif;font-size:17px;font-weight:700;
-  background:#fffdf5;color:#3a2a10;outline:none;
-  transition:border-color .2s;
-}
-.ans-input:focus{border-color:#5aab5e;box-shadow:0 0 0 3px rgba(90,171,94,.18);}
-.ans-input.ok {border-color:#5aab5e;background:#eafae8;}
-.ans-input.no {border-color:#d95a3a;background:#fdf0ed;animation:shake .3s;}
+body{font-family:'Nunito',sans-serif;background:#7bc47f;min-height:100vh;overflow-x:hidden;}
+.world{min-height:100vh;background:linear-gradient(180deg,#b8e8f5 0%,#d4f0fa 35%,#c8ebb0 55%,#7bc47f 65%,#5aab5e 100%);position:relative;}
+.screen{display:none;min-height:100vh;position:relative;z-index:1;flex-direction:column;align-items:center;}
+.screen.active{display:flex;}
+#startScreen{justify-content:center;padding:32px 20px;}
+.acnh-board{background:#f5e6c8;border:4px solid #c8a96e;border-radius:20px;padding:28px 36px 24px;text-align:center;box-shadow:0 6px 0 #a07840,0 8px 24px rgba(0,0,0,.18);max-width:340px;width:100%;margin-bottom:20px;}
+.acnh-icon{font-size:60px;display:block;margin-bottom:8px;animation:sway 3s ease-in-out infinite;}
+@keyframes sway{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
+.acnh-title{font-family:'Press Start 2P',monospace;font-size:18px;color:#4a7c3f;text-shadow:2px 2px 0 #b8dba0;line-height:1.6;margin-bottom:6px;}
+.acnh-sub{font-size:14px;font-weight:700;color:#7a5c2e;}
+.main-btn{display:block;width:100%;max-width:240px;margin:0 auto 10px;padding:13px 0;border-radius:50px;font-family:'Press Start 2P',monospace;font-size:10px;cursor:pointer;transition:all .12s;letter-spacing:1px;}
+.btn-green{background:#5aab5e;color:#fff;border:3px solid #3d8040;box-shadow:0 4px 0 #2c6030;}
+.btn-tan{background:#f5e6c8;color:#7a5c2e;border:3px solid #c8a96e;box-shadow:0 3px 0 #a07840;}
+.main-btn:hover{transform:translateY(-2px);}
+.main-btn:active{transform:translateY(2px);}
+.stat-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center;}
+.stat-chip{background:rgba(255,255,255,.75);border:2px solid #c8dba8;border-radius:50px;padding:5px 13px;font-size:12px;font-weight:800;color:#4a6630;}
+.screen-hdr{display:flex;align-items:center;gap:12px;width:100%;max-width:680px;margin-bottom:16px;background:#f5e6c8;border:3px solid #c8a96e;border-radius:16px;padding:10px 16px;box-shadow:0 3px 0 #a07840;}
+.hdr-title{font-family:'Press Start 2P',monospace;font-size:11px;color:#4a7c3f;flex:1;}
+.hdr-back{background:none;border:none;cursor:pointer;font-size:20px;line-height:1;}
+#wordListScreen{padding:16px;justify-content:flex-start;align-items:center;}
+.word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:9px;width:100%;max-width:680px;}
+.word-tile{background:#fffdf5;border:3px solid #c8a96e;border-radius:14px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .15s;box-shadow:0 3px 0 #a07840;}
+.word-tile:hover{transform:translateY(-3px);box-shadow:0 6px 0 #a07840;}
+.word-tile:active{transform:translateY(2px);box-shadow:0 1px 0 #a07840;}
+.tile-plant{font-size:24px;display:block;margin-bottom:3px;}
+.tile-word{font-family:'Press Start 2P',monospace;font-size:6.5px;color:#3a2a10;display:block;margin-bottom:2px;}
+.tile-meaning{font-size:11px;font-weight:800;color:#7a5c2e;display:block;}
+.stage-bar{display:flex;gap:2px;justify-content:center;margin-top:4px;}
+.stage-dot{width:7px;height:7px;border-radius:50%;background:#e0cfa0;border:1.5px solid #c8a96e;}
+.stage-dot.done{background:#5aab5e;border-color:#3d8040;}
+.stage-dot.cur{background:#e07840;border-color:#a05020;}
+#gardenScreen{padding:16px;justify-content:flex-start;align-items:center;}
+.garden-scene{width:100%;max-width:680px;background:linear-gradient(180deg,#b8e8f5 0%,#d4f0fa 30%,#c8ebb0 52%,#7bc47f 65%,#5aab5e 100%);border:4px solid #4a8a4e;border-radius:24px;padding:20px 20px 36px;position:relative;overflow:hidden;min-height:340px;box-shadow:0 6px 0 #3a6a3e,0 8px 20px rgba(0,0,0,.15);}
+.scene-sun{position:absolute;top:14px;right:24px;width:48px;height:48px;background:#ffe866;border-radius:50%;border:3px solid #e8c820;box-shadow:0 0 0 6px rgba(255,232,102,.3);}
+.scene-cloud{position:absolute;background:#fff;border-radius:30px;animation:cloudDrift ease-in-out infinite;}
+.scene-cloud::before{content:'';position:absolute;background:#fff;border-radius:50%;}
+.sc1{top:16px;left:24px;width:68px;height:22px;animation-duration:7s;}
+.sc1::before{top:-11px;left:14px;width:36px;height:26px;}
+.sc2{top:10px;left:140px;width:44px;height:16px;opacity:.7;animation-duration:10s;animation-direction:reverse;}
+.sc2::before{top:-8px;left:9px;width:26px;height:20px;}
+@keyframes cloudDrift{0%,100%{transform:translateX(0);}50%{transform:translateX(14px);}}
+.scene-grass{position:absolute;bottom:0;left:0;right:0;height:60px;background:#5aab5e;border-radius:0 0 18px 18px;}
+.scene-grass::before{content:'';position:absolute;top:-10px;left:0;right:0;height:20px;background:#6ab86e;border-radius:50% 50% 0 0/20px 20px 0 0;}
+.garden-plots{display:grid;grid-template-columns:repeat(8,1fr);gap:7px;position:relative;z-index:2;padding-bottom:36px;}
+.gplot{aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:42px;background:rgba(139,94,60,.2);border:2px solid rgba(100,60,20,.25);}
+.gplot.planted{cursor:pointer;transition:transform .15s;}
+.gplot.planted:hover{transform:scale(1.1) translateY(-4px);z-index:5;}
+.gplot.s1{background:rgba(210,180,110,.5);border-color:#b89040;}
+.gplot.s2{background:rgba(160,220,140,.5);border-color:#5aab5e;}
+.gplot.s3{background:rgba(255,200,120,.5);border-color:#e07840;}
+.gplot.s4{background:rgba(180,230,200,.5);border-color:#3aaa80;}
+.gplot-icon{font-size:20px;line-height:1;}
+.gplot-word{font-size:5.5px;font-weight:900;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6);text-align:center;margin-top:1px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px;}
+.gstats{display:flex;gap:10px;width:100%;max-width:680px;margin-top:12px;flex-wrap:wrap;}
+.gstat{flex:1;min-width:90px;background:#fffdf5;border:3px solid #c8a96e;border-radius:14px;padding:10px 12px;text-align:center;box-shadow:0 3px 0 #a07840;}
+.gstat-n{font-size:24px;font-weight:900;color:#3a2a10;}
+.gstat-l{font-size:9px;font-weight:800;color:#7a5c2e;text-transform:uppercase;letter-spacing:.8px;}
+#studyModal{display:none;position:fixed;inset:0;z-index:50;background:rgba(60,40,10,.55);align-items:center;justify-content:center;padding:20px;}
+#studyModal.open{display:flex;}
+.modal-box{background:#fffdf5;border:4px solid #c8a96e;border-radius:24px;padding:24px;width:100%;max-width:400px;box-shadow:0 8px 0 #a07840,0 12px 32px rgba(0,0,0,.2);position:relative;max-height:90vh;overflow-y:auto;}
+.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;cursor:pointer;font-size:20px;color:#7a5c2e;}
+.step-bar{display:flex;gap:4px;margin-bottom:20px;}
+.step-item{flex:1;text-align:center;}
+.step-icon{font-size:16px;display:block;}
+.step-lbl{font-family:'Press Start 2P',monospace;font-size:7px;color:#c8a96e;margin-top:2px;}
+.step-line{height:4px;background:#e0cfa0;border-radius:2px;margin-top:3px;}
+.step-item.active .step-line{background:#e07840;}
+.step-item.active .step-lbl{color:#e07840;}
+.step-item.done .step-line{background:#5aab5e;}
+.step-item.done .step-lbl{color:#5aab5e;}
+.study-content{text-align:center;}
+.study-mode-tag{display:inline-block;padding:3px 12px;border-radius:50px;font-size:11px;font-weight:800;letter-spacing:.5px;margin-bottom:12px;}
+.tag-1{background:#d4f0c8;color:#2c6030;border:2px solid #8cc87a;}
+.tag-2{background:#fde8b8;color:#7a4a10;border:2px solid #e0a040;}
+.tag-3{background:#ddeeff;color:#2a4e7a;border:2px solid #6aa0d0;}
+.tag-4{background:#fde0f8;color:#7a2a6a;border:2px solid #d080c0;}
+.study-word{font-family:'Press Start 2P',monospace;font-size:24px;color:#3a2a10;margin-bottom:6px;line-height:1.4;}
+.study-meaning{font-size:20px;font-weight:900;color:#7a5c2e;margin-bottom:10px;}
+.study-sentence{background:#f0ead8;border:2px solid #d4c090;border-radius:12px;padding:12px 14px;font-size:13px;font-weight:700;color:#3a2a10;line-height:1.9;text-align:left;margin-bottom:6px;}
+.study-sentence-ko{font-size:11px;color:#7a6040;font-weight:700;text-align:left;margin-top:4px;}
+.study-input{width:100%;padding:12px 16px;border:3px solid #c8a96e;border-radius:14px;font-family:'Nunito',sans-serif;font-size:17px;font-weight:700;background:#fffdf5;color:#3a2a10;outline:none;margin-top:12px;margin-bottom:8px;}
+.study-input:focus{border-color:#5aab5e;box-shadow:0 0 0 3px rgba(90,171,94,.18);}
+.study-input.ok{border-color:#5aab5e;background:#eafae8;}
+.study-input.no{border-color:#d95a3a;background:#fde0d8;animation:shake .3s;}
 @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-7px);}75%{transform:translateX(7px);}}
-
-.go-btn{
-  padding:12px 18px;
-  background:#5aab5e;color:#fff;
-  border:3px solid #3d8040;border-radius:14px;
-  font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;
-  cursor:pointer;box-shadow:0 3px 0 #2c6030;transition:all .12s;
-  white-space:nowrap;
-}
-.go-btn:hover{transform:translateY(-2px);}
-.go-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #2c6030;}
-
-.hint-row{display:flex;gap:10px;width:100%;max-width:420px;margin-bottom:12px;}
-.smol-btn{
-  flex:1;padding:9px;
-  border:2px solid #c8a96e;border-radius:12px;
-  background:#f5e6c8;color:#7a5c2e;
-  font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;
-  cursor:pointer;transition:all .12s;
-}
-.smol-btn:hover{background:#eedcaa;border-color:#a07840;}
-
-.feedback{
-  font-size:14px;font-weight:800;
-  padding:8px 20px;border-radius:50px;
-  margin-bottom:8px;text-align:center;
-  animation:popIn .25s;
-}
+.study-btn-row{display:flex;gap:8px;margin-top:4px;}
+.study-btn{flex:1;padding:11px;border-radius:14px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .12s;}
+.sbtn-green{background:#5aab5e;color:#fff;border:3px solid #3d8040;box-shadow:0 3px 0 #2c6030;}
+.sbtn-tan{background:#f5e6c8;color:#7a5c2e;border:2px solid #c8a96e;box-shadow:0 2px 0 #a07840;}
+.sbtn-green:hover,.sbtn-tan:hover{transform:translateY(-2px);}
+.study-feedback{font-size:13px;font-weight:800;padding:7px 14px;border-radius:50px;margin:6px 0;text-align:center;animation:popIn .25s;}
 @keyframes popIn{0%{transform:scale(.8);opacity:0;}100%{transform:scale(1);opacity:1;}}
 .fb-ok{background:#d4f0c8;color:#2c6030;border:2px solid #8cc87a;}
 .fb-no{background:#fde0d8;color:#8c2a10;border:2px solid #e08878;}
 .fb-hint{background:#fde8b8;color:#7a4a10;border:2px solid #e0a040;}
-.fb-hide{visibility:hidden;}
-
-/* ── 정원 화면 ── */
-#gardenScreen{padding:20px;justify-content:flex-start;align-items:center;}
-
-.garden-hdr{
-  display:flex;justify-content:space-between;align-items:center;
-  width:100%;max-width:640px;
-  margin-bottom:16px;flex-wrap:wrap;gap:10px;
-}
-.garden-ttl{
-  font-family:'Press Start 2P',monospace;font-size:13px;
-  color:#2c6030;text-shadow:1px 1px 0 #b8dba0;
-}
-.hdr-btns{display:flex;gap:10px;}
-.acnh-btn{
-  padding:9px 16px;
-  border:3px solid #3d8040;border-radius:50px;
-  background:#5aab5e;color:#fff;
-  font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;
-  cursor:pointer;box-shadow:0 3px 0 #2c6030;transition:all .12s;
-}
-.acnh-btn.rev{background:#e07840;border-color:#a05020;box-shadow:0 3px 0 #7a3a10;}
-.acnh-btn:hover{transform:translateY(-2px);}
-.acnh-btn:active{transform:translateY(2px);}
-
-/* 정원 씬 */
-.garden-scene{
-  width:100%;max-width:640px;
-  background:linear-gradient(180deg,#b8e8f5 0%,#d4f0fa 30%,#c8ebb0 52%,#7bc47f 65%,#5aab5e 100%);
-  border:4px solid #4a8a4e;
-  border-radius:24px;
-  padding:20px 20px 30px;
-  position:relative;
-  overflow:hidden;
-  min-height:360px;
-  box-shadow:0 6px 0 #3a6a3e, 0 8px 20px rgba(0,0,0,.15);
-}
-
-.scene-sun{
-  position:absolute;top:14px;right:24px;
-  width:52px;height:52px;
-  background:#ffe866;border-radius:50%;
-  border:3px solid #e8c820;
-  box-shadow:0 0 0 6px rgba(255,232,102,.3);
-  animation:sunPulse 4s ease-in-out infinite;
-}
-@keyframes sunPulse{0%,100%{box-shadow:0 0 0 6px rgba(255,232,102,.3);}50%{box-shadow:0 0 0 12px rgba(255,232,102,.15);}}
-
-.scene-cloud{
-  position:absolute;
-  background:#fff;border-radius:30px;
-  animation:cloudDrift ease-in-out infinite;
-}
-.scene-cloud::before{
-  content:'';position:absolute;
-  background:#fff;border-radius:50%;
-}
-.sc1{top:18px;left:28px;width:72px;height:24px;animation:cloudDrift 7s ease-in-out infinite;}
-.sc1::before{top:-12px;left:16px;width:38px;height:28px;}
-.sc2{top:10px;left:150px;width:48px;height:18px;opacity:.75;animation:cloudDrift 10s ease-in-out infinite reverse;}
-.sc2::before{top:-9px;left:10px;width:28px;height:22px;}
-@keyframes cloudDrift{0%,100%{transform:translateX(0);}50%{transform:translateX(14px);}}
-
-/* 풀밭 줄무늬 */
-.scene-grass{
-  position:absolute;bottom:0;left:0;right:0;height:70px;
-  background:#5aab5e;border-radius:0 0 18px 18px;
-}
-.scene-grass::before{
-  content:'';position:absolute;
-  top:-12px;left:0;right:0;height:24px;
-  background:#6ab86e;
-  border-radius:50% 50% 0 0 / 24px 24px 0 0;
-}
-
-/* 화단 그리드 */
-.plots{
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:8px;
-  position:relative;z-index:2;
-  padding-bottom:44px;
-}
-
-.plot{
-  aspect-ratio:1;
-  border-radius:12px;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  cursor:pointer;
-  transition:transform .15s;
-  position:relative;
-  background:rgba(139,94,60,.25);
-  border:2px solid rgba(100,60,20,.3);
-  min-height:48px;
-}
-.plot:hover{transform:scale(1.1) translateY(-4px);z-index:5;}
-.plot.empty{opacity:.4;cursor:default;}
-.plot.empty:hover{transform:none;}
-
-.plot-icon{font-size:24px;line-height:1;}
-.plot-word{
-  font-size:6.5px;font-weight:900;
-  color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6);
-  text-align:center;margin-top:1px;
-  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  padding:0 2px;
-}
-
-/* 성장 단계 배경 */
-.plot.s1{background:rgba(210,180,110,.55);border-color:#b89040;}
-.plot.s2{background:rgba(160,220,140,.55);border-color:#5aab5e;}
-.plot.s3{background:rgba(255,200,120,.55);border-color:#e07840;}
-.plot.s4{background:rgba(180,230,200,.55);border-color:#3aaa80;}
-
-/* 툴팁 */
-.ptip{
-  display:none;position:absolute;
-  bottom:calc(100% + 6px);left:50%;
-  transform:translateX(-50%);
-  background:#3a2a10;color:#f5e6c8;
-  padding:6px 10px;border-radius:9px;
-  font-size:11px;font-weight:700;
-  white-space:nowrap;z-index:20;
-  border:2px solid #7a5c2e;
-  pointer-events:none;
-}
-.ptip::after{
-  content:'';position:absolute;top:100%;left:50%;
-  transform:translateX(-50%);
-  border:5px solid transparent;
-  border-top-color:#3a2a10;
-}
-.plot:hover .ptip{display:block;}
-
-/* 정원 통계 */
-.gstats{
-  display:flex;gap:10px;
-  width:100%;max-width:640px;
-  margin-top:14px;flex-wrap:wrap;
-}
-.gstat{
-  flex:1;min-width:100px;
-  background:#fffdf5;
-  border:3px solid #c8a96e;border-radius:16px;
-  padding:12px 14px;text-align:center;
-  box-shadow:0 3px 0 #a07840;
-}
-.gstat-n{font-size:26px;font-weight:900;color:#3a2a10;}
-.gstat-l{font-size:10px;font-weight:800;color:#7a5c2e;text-transform:uppercase;letter-spacing:.8px;}
-
-/* ── 복습 화면 ── */
-#reviewScreen{padding:20px;justify-content:flex-start;align-items:center;}
-
-.rev-hdr{
-  display:flex;justify-content:space-between;align-items:center;
-  width:100%;max-width:420px;margin-bottom:14px;
-}
-.rev-ttl{font-family:'Press Start 2P',monospace;font-size:11px;color:#3a2a10;}
-.streak-chip{
-  background:#e07840;color:#fff;
-  border:2px solid #a05020;border-radius:50px;
-  padding:5px 12px;font-size:12px;font-weight:800;
-  box-shadow:0 2px 0 #7a3a10;
-}
-
-.bonus-bar-wrap{
-  width:100%;max-width:420px;
-  background:#fffdf5;border:3px solid #c8a96e;border-radius:16px;
-  padding:12px 16px;margin-bottom:14px;
-  box-shadow:0 3px 0 #a07840;
-}
-.bonus-lbl{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:#7a5c2e;margin-bottom:6px;}
-.bonus-track{background:#e0cfa0;border-radius:6px;height:11px;overflow:hidden;border:1.5px solid #c8a96e;}
-.bonus-fill{height:100%;background:#e07840;border-radius:6px;transition:width .6s cubic-bezier(.34,1.56,.64,1);}
-
-.rev-card{
-  width:100%;max-width:420px;
-  background:#fffdf5;border:3px solid #c8a96e;border-radius:20px;
-  padding:26px 24px;text-align:center;
-  box-shadow:0 4px 0 #a07840, 0 6px 16px rgba(0,0,0,.1);
-  margin-bottom:14px;
-}
-.rev-type{font-size:11px;font-weight:800;color:#7a5c2e;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;}
-.rev-q{font-family:'Press Start 2P',monospace;font-size:22px;color:#3a2a10;margin-bottom:6px;line-height:1.5;}
-.rev-q-ko{font-size:17px;font-weight:800;color:#7a5c2e;margin-bottom:20px;}
-.rev-sent{background:#f0ead8;border:2px solid #d4c090;border-radius:11px;padding:11px 13px;font-size:13px;font-weight:700;color:#3a2a10;line-height:1.9;text-align:left;}
-.rev-sent-ko{font-size:11px;color:#7a6040;font-weight:700;margin-top:4px;}
-
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px;}
-.choice{
-  padding:13px 10px;
-  border:2.5px solid #c8a96e;border-radius:13px;
-  background:#fffdf5;
-  font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;
-  cursor:pointer;color:#3a2a10;transition:all .12s;
-}
-.choice:hover:not(:disabled){border-color:#5aab5e;background:#eafae8;color:#2c6030;transform:scale(1.03);}
-.choice.ok{border-color:#5aab5e!important;background:#d4f0c8!important;color:#2c6030!important;}
-.choice.no{border-color:#d95a3a!important;background:#fde0d8!important;color:#8c2a10!important;}
-.choice:disabled{cursor:default;}
-
-.rev-inp-row{display:flex;gap:10px;margin-top:16px;}
-.rev-inp{
-  flex:1;padding:12px 16px;
-  border:3px solid #c8a96e;border-radius:13px;
-  font-family:'Nunito',sans-serif;font-size:17px;font-weight:700;
-  background:#fffdf5;color:#3a2a10;outline:none;
-}
-.rev-inp:focus{border-color:#5aab5e;box-shadow:0 0 0 3px rgba(90,171,94,.18);}
-.rev-sub{
-  padding:12px 16px;
-  background:#5aab5e;color:#fff;
-  border:3px solid #3d8040;border-radius:13px;
-  font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;
-  cursor:pointer;box-shadow:0 3px 0 #2c6030;
-}
-
-.back-btn{
-  padding:10px 22px;
-  background:#f5e6c8;color:#7a5c2e;
-  border:2.5px solid #c8a96e;border-radius:50px;
-  font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;
-  cursor:pointer;box-shadow:0 2px 0 #a07840;
-  transition:all .12s;margin-top:6px;
-}
-.back-btn:hover{transform:translateY(-2px);}
-
-/* ── 보너스 팝업 (in-flow) ── */
-.bonus-overlay-inflow{
-  display:none;
-  position:relative;z-index:50;
-  width:100%;max-width:420px;
-  background:rgba(0,0,0,.45);
-  border-radius:24px;
-  min-height:340px;
-  align-items:center;justify-content:center;
-  margin-bottom:14px;
-}
-.bonus-overlay-inflow.show{display:flex;}
-.bonus-popup{
-  background:#fffdf5;border:4px solid #c8a96e;border-radius:22px;
-  padding:32px 40px;text-align:center;
-  box-shadow:0 6px 0 #a07840;
-  max-width:300px;width:90%;
-}
-.bp-icon{font-size:56px;display:block;margin-bottom:10px;}
-.bp-ttl{font-family:'Press Start 2P',monospace;font-size:14px;color:#4a7c3f;margin-bottom:8px;}
-.bp-desc{font-size:13px;font-weight:700;color:#7a5c2e;line-height:1.7;margin-bottom:6px;}
-.bp-pts{font-size:30px;font-weight:900;color:#e07840;margin-bottom:16px;}
-.bp-close{
-  padding:11px 28px;
-  background:#5aab5e;color:#fff;
-  border:3px solid #3d8040;border-radius:50px;
-  font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;
-  cursor:pointer;box-shadow:0 3px 0 #2c6030;
-}
-
-/* 꽃 날리기 */
-.confetti-wrap{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:100;}
-.cpiece{
-  position:absolute;top:-20px;
-  font-size:18px;
-  animation:cfall linear forwards;
-}
-@keyframes cfall{
-  0%{transform:translateY(0) rotate(0deg);opacity:1;}
-  100%{transform:translateY(110vh) rotate(720deg);opacity:0;}
-}
+.fb-hide{display:none;}
+.complete-box{text-align:center;padding:8px 0;}
+.complete-plant{font-size:60px;display:block;margin-bottom:10px;animation:bounce 1s ease-in-out infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.complete-title{font-family:'Press Start 2P',monospace;font-size:13px;color:#4a7c3f;margin-bottom:8px;}
+.complete-desc{font-size:14px;font-weight:700;color:#7a5c2e;line-height:1.7;margin-bottom:16px;}
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:200;overflow:hidden;}
+.cpiece{position:absolute;top:-20px;font-size:16px;animation:cfall linear forwards;}
+@keyframes cfall{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(720deg);opacity:0;}}
 </style>
 
 <div class="world">
-
-<!-- ── 시작화면 ── -->
 <div class="screen active" id="startScreen">
-  <span class="leaf-deco" style="top:8%;left:5%;animation-delay:0s;">🍃</span>
-  <span class="leaf-deco" style="top:15%;right:6%;animation-delay:1.2s;">🌿</span>
-  <span class="leaf-deco" style="bottom:18%;left:8%;animation-delay:.6s;font-size:22px;">🍂</span>
-  <span class="leaf-deco" style="bottom:12%;right:10%;animation-delay:2s;font-size:20px;">🌱</span>
-
   <div class="acnh-board">
     <span class="acnh-icon">🌳</span>
     <div class="acnh-title">PIXEL<br>GARDEN</div>
     <div class="acnh-sub">단어를 심고 마을을 키워봐!</div>
   </div>
-
-  <button class="start-btn" onclick="startGame()">▶ 학습 시작</button>
-  <button class="garden-link-btn" onclick="goGarden()">🏡 내 정원 보기</button>
-
+  <button class="main-btn btn-green" onclick="showScreen('wordListScreen')">📚 단어 학습</button>
+  <button class="main-btn btn-tan" onclick="showScreen('gardenScreen')">🏡 내 정원 보기</button>
   <div class="stat-row">
     <div class="stat-chip">🌱 <span id="stPlanted">0</span>개 심음</div>
     <div class="stat-chip">⭐ <span id="stScore">0</span>점</div>
@@ -555,124 +125,103 @@ body{
   </div>
 </div>
 
-<!-- ── 학습화면 ── -->
-<div class="screen" id="studyScreen">
-  <div class="top-bar">
-    <button class="tb-btn" onclick="goGarden()">🏠</button>
-    <div class="progress-wrap">
-      <div class="prog-bg"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
-      <div class="prog-label" id="progLabel">0 / 0</div>
-    </div>
-    <div class="score-chip">⭐ <span id="curScore">0</span></div>
+<div class="screen" id="wordListScreen">
+  <div class="screen-hdr">
+    <button class="hdr-back" onclick="showScreen('startScreen')">🏠</button>
+    <div class="hdr-title">📖 단어 목록</div>
+    <div style="font-size:12px;font-weight:800;color:#7a5c2e;"><span id="learnedCount">0</span>/120</div>
   </div>
-
-  <div class="word-card">
-    <span class="mode-tag tag-flash" id="modeTag">플래시카드</span>
-    <div class="word-main" id="wMain">apple</div>
-    <div class="word-meaning" id="wMean">사과</div>
-    <div class="sentence-box" id="sentBox" style="display:none;"></div>
-  </div>
-
-  <div class="input-row" id="inputRow" style="display:none;">
-    <input class="ans-input" id="ansInput" placeholder="영어 단어 입력..." autocomplete="off" autocorrect="off" spellcheck="false">
-    <button class="go-btn" onclick="checkAnswer()">확인</button>
-  </div>
-
-  <div class="feedback fb-hide" id="feedback">정답!</div>
-
-  <div class="hint-row">
-    <button class="smol-btn" id="hintBtn" onclick="showHint()" style="display:none;">💡 힌트</button>
-    <button class="smol-btn" onclick="nextWord()">다음 →</button>
-  </div>
+  <div class="word-grid" id="wordGrid"></div>
 </div>
 
-<!-- ── 정원화면 ── -->
-<div class="screen" id="gardenScreen" style="justify-content:flex-start;padding:20px;">
-  <div class="garden-hdr">
-    <div class="garden-ttl">🏡 MY GARDEN</div>
-    <div class="hdr-btns">
-      <button class="acnh-btn" onclick="showScreen('startScreen')">📚 학습</button>
-      <button class="acnh-btn rev" onclick="startReview()">🔄 복습</button>
-    </div>
+<div class="screen" id="gardenScreen">
+  <div class="screen-hdr">
+    <button class="hdr-back" onclick="showScreen('startScreen')">🏠</button>
+    <div class="hdr-title">🏡 MY GARDEN</div>
+    <button style="background:#5aab5e;color:#fff;border:2px solid #3d8040;border-radius:50px;padding:6px 14px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;" onclick="showScreen('wordListScreen')">📚 학습</button>
   </div>
-
-  <div class="garden-scene" style="position:relative;">
+  <div class="garden-scene">
     <div class="scene-sun"></div>
     <div class="scene-cloud sc1"></div>
     <div class="scene-cloud sc2"></div>
-    <div class="plots" id="plots"></div>
+    <div class="garden-plots" id="gardenPlots"></div>
     <div class="scene-grass"></div>
-    <div class="confetti-wrap" id="gardenConfetti"></div>
   </div>
-
   <div class="gstats">
     <div class="gstat"><div class="gstat-n" id="gs1">0</div><div class="gstat-l">심은 단어</div></div>
-    <div class="gstat"><div class="gstat-n" id="gs2">0</div><div class="gstat-l">복습 완료</div></div>
+    <div class="gstat"><div class="gstat-n" id="gs2">0</div><div class="gstat-l">완전 성장</div></div>
     <div class="gstat"><div class="gstat-n" id="gs3">0</div><div class="gstat-l">총 점수</div></div>
     <div class="gstat"><div class="gstat-n" id="gs4">0</div><div class="gstat-l">최고 연속</div></div>
   </div>
 </div>
 
-<!-- ── 복습화면 ── -->
-<div class="screen" id="reviewScreen" style="justify-content:flex-start;padding:20px;">
-  <div class="rev-hdr">
-    <div class="rev-ttl">🔄 REVIEW</div>
-    <div class="streak-chip">🔥 <span id="revStreak">0</span>연속</div>
-  </div>
-
-  <div class="bonus-bar-wrap">
-    <div class="bonus-lbl"><span>🍀 보너스 게이지</span><span id="bonusCnt">0 / 5</span></div>
-    <div class="bonus-track"><div class="bonus-fill" id="bonusFill" style="width:0%"></div></div>
-  </div>
-
-  <!-- 보너스 팝업 in-flow -->
-  <div class="bonus-overlay-inflow" id="bonusOvl">
-    <div class="bonus-popup">
-      <span class="bp-icon" id="bpIcon">🍀</span>
-      <div class="bp-ttl">BONUS!</div>
-      <div class="bp-desc" id="bpDesc">5연속 달성!</div>
-      <div class="bp-pts" id="bpPts">+30점</div>
-      <button class="bp-close" onclick="closeBonus()">계속하기 →</button>
+<div id="studyModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="step-bar" id="stepBar">
+      <div class="step-item" id="step0"><span class="step-icon">🃏</span><div class="step-lbl">카드</div><div class="step-line"></div></div>
+      <div class="step-item" id="step1"><span class="step-icon">✏️</span><div class="step-lbl">단어</div><div class="step-line"></div></div>
+      <div class="step-item" id="step2"><span class="step-icon">📝</span><div class="step-lbl">빈칸</div><div class="step-line"></div></div>
+      <div class="step-item" id="step3"><span class="step-icon">✍️</span><div class="step-lbl">문장</div><div class="step-line"></div></div>
     </div>
+    <div id="studyContent"></div>
   </div>
-
-  <div class="rev-card" id="revCard">
-    <div class="rev-type" id="revTypeLbl">뜻 보고 영단어 맞추기</div>
-    <div class="rev-q" id="revQ" style="display:none;"></div>
-    <div class="rev-q-ko" id="revQKo" style="display:none;"></div>
-    <div class="rev-sent" id="revSent" style="display:none;"></div>
-    <div class="rev-sent-ko" id="revSentKo" style="display:none;"></div>
-    <div class="choices" id="revChoices" style="display:none;"></div>
-    <div class="rev-inp-row" id="revInpRow" style="display:none;">
-      <input class="rev-inp" id="revInp" placeholder="영단어 입력..." autocomplete="off" autocorrect="off" spellcheck="false">
-      <button class="rev-sub" onclick="checkReview()">확인</button>
-    </div>
-  </div>
-
-  <button class="back-btn" onclick="goGarden()">← 정원으로</button>
 </div>
-
-<div class="confetti-wrap" id="globalConfetti" style="position:fixed;inset:0;pointer-events:none;z-index:200;overflow:hidden;"></div>
+<div class="confetti-wrap" id="confettiWrap"></div>
 </div>
 
 <script>
 const WORDS=[
-  {w:"apple",m:"사과"},{w:"banana",m:"바나나"},{w:"ball",m:"공"},{w:"bear",m:"곰"},
-  {w:"bed",m:"침대"},{w:"bird",m:"새"},{w:"book",m:"책"},{w:"cat",m:"고양이"},
-  {w:"dog",m:"개"},{w:"egg",m:"계란"},{w:"fish",m:"물고기"},{w:"flower",m:"꽃"},
-  {w:"hand",m:"손"},{w:"hat",m:"모자"},{w:"house",m:"집"},{w:"milk",m:"우유"},
-  {w:"moon",m:"달"},{w:"nose",m:"코"},{w:"orange",m:"오렌지"},{w:"pig",m:"돼지"},
-  {w:"rain",m:"비"},{w:"sun",m:"태양"},{w:"tree",m:"나무"},{w:"water",m:"물"},
-  {w:"big",m:"큰"},{w:"happy",m:"행복한"},{w:"hot",m:"뜨거운"},{w:"red",m:"빨간"},
-  {w:"run",m:"달리다"},{w:"eat",m:"먹다"},{w:"bread",m:"빵"},{w:"bus",m:"버스"},
-  {w:"cake",m:"케이크"},{w:"chair",m:"의자"},{w:"cloud",m:"구름"},{w:"cold",m:"추운"},
-  {w:"door",m:"문"},{w:"duck",m:"오리"},{w:"ear",m:"귀"},{w:"eye",m:"눈"},
-  {w:"face",m:"얼굴"},{w:"farm",m:"농장"},{w:"friend",m:"친구"},{w:"frog",m:"개구리"},
-  {w:"green",m:"초록색"},{w:"jump",m:"뛰어오르다"},{w:"king",m:"왕"},{w:"lion",m:"사자"},
-  {w:"morning",m:"아침"},{w:"mother",m:"어머니"},{w:"pencil",m:"연필"},{w:"rabbit",m:"토끼"},
-  {w:"school",m:"학교"},{w:"small",m:"작은"},{w:"snow",m:"눈"},{w:"star",m:"별"},
-  {w:"swim",m:"수영하다"},{w:"toy",m:"장난감"},{w:"yellow",m:"노란색"},{w:"zoo",m:"동물원"}
+  {w:"apple",m:"사과",e:"🍎"},{w:"banana",m:"바나나",e:"🍌"},{w:"ball",m:"공",e:"⚽"},
+  {w:"bear",m:"곰",e:"🐻"},{w:"bed",m:"침대",e:"🛏️"},{w:"bird",m:"새",e:"🐦"},
+  {w:"book",m:"책",e:"📚"},{w:"cat",m:"고양이",e:"🐱"},{w:"dog",m:"개",e:"🐶"},
+  {w:"egg",m:"계란",e:"🥚"},{w:"fish",m:"물고기",e:"🐟"},{w:"flower",m:"꽃",e:"🌸"},
+  {w:"hand",m:"손",e:"✋"},{w:"hat",m:"모자",e:"🎩"},{w:"house",m:"집",e:"🏠"},
+  {w:"milk",m:"우유",e:"🥛"},{w:"moon",m:"달",e:"🌙"},{w:"nose",m:"코",e:"👃"},
+  {w:"orange",m:"오렌지",e:"🍊"},{w:"pig",m:"돼지",e:"🐷"},{w:"rain",m:"비",e:"🌧️"},
+  {w:"sun",m:"태양",e:"☀️"},{w:"tree",m:"나무",e:"🌳"},{w:"water",m:"물",e:"💧"},
+  {w:"big",m:"큰",e:"🐘"},{w:"happy",m:"행복한",e:"😊"},{w:"hot",m:"뜨거운",e:"🔥"},
+  {w:"red",m:"빨간",e:"🔴"},{w:"run",m:"달리다",e:"🏃"},{w:"eat",m:"먹다",e:"🍽️"},
+  {w:"bread",m:"빵",e:"🍞"},{w:"bus",m:"버스",e:"🚌"},{w:"cake",m:"케이크",e:"🎂"},
+  {w:"chair",m:"의자",e:"🪑"},{w:"cloud",m:"구름",e:"☁️"},{w:"cold",m:"추운",e:"🥶"},
+  {w:"door",m:"문",e:"🚪"},{w:"duck",m:"오리",e:"🦆"},{w:"ear",m:"귀",e:"👂"},
+  {w:"eye",m:"눈",e:"👁️"},{w:"face",m:"얼굴",e:"😀"},{w:"farm",m:"농장",e:"🌾"},
+  {w:"friend",m:"친구",e:"👫"},{w:"frog",m:"개구리",e:"🐸"},{w:"green",m:"초록색",e:"🟢"},
+  {w:"jump",m:"뛰어오르다",e:"🦘"},{w:"king",m:"왕",e:"👑"},{w:"lion",m:"사자",e:"🦁"},
+  {w:"morning",m:"아침",e:"🌅"},{w:"mother",m:"어머니",e:"👩"},{w:"pencil",m:"연필",e:"✏️"},
+  {w:"rabbit",m:"토끼",e:"🐰"},{w:"school",m:"학교",e:"🏫"},{w:"small",m:"작은",e:"🐭"},
+  {w:"snow",m:"눈(snow)",e:"❄️"},{w:"star",m:"별",e:"⭐"},{w:"swim",m:"수영하다",e:"🏊"},
+  {w:"toy",m:"장난감",e:"🧸"},{w:"yellow",m:"노란색",e:"🟡"},{w:"zoo",m:"동물원",e:"🦒"},
+  {w:"airplane",m:"비행기",e:"✈️"},{w:"angry",m:"화난",e:"😠"},{w:"answer",m:"대답",e:"💬"},
+  {w:"arm",m:"팔",e:"💪"},{w:"baby",m:"아기",e:"👶"},{w:"bag",m:"가방",e:"👜"},
+  {w:"beach",m:"해변",e:"🏖️"},{w:"bike",m:"자전거",e:"🚲"},{w:"black",m:"검은색",e:"⬛"},
+  {w:"blue",m:"파란색",e:"🔵"},{w:"body",m:"몸",e:"🧍"},{w:"box",m:"상자",e:"📦"},
+  {w:"boy",m:"소년",e:"👦"},{w:"bridge",m:"다리",e:"🌉"},{w:"brother",m:"형/남동생",e:"👦"},
+  {w:"brown",m:"갈색",e:"🟤"},{w:"build",m:"짓다",e:"🏗️"},{w:"buy",m:"사다",e:"🛒"},
+  {w:"cap",m:"야구모자",e:"🧢"},{w:"car",m:"자동차",e:"🚗"},{w:"carrot",m:"당근",e:"🥕"},
+  {w:"cheese",m:"치즈",e:"🧀"},{w:"chicken",m:"닭",e:"🐔"},{w:"city",m:"도시",e:"🏙️"},
+  {w:"class",m:"수업",e:"🎓"},{w:"clean",m:"깨끗한",e:"🧹"},{w:"climb",m:"오르다",e:"🧗"},
+  {w:"cook",m:"요리하다",e:"👨‍🍳"},{w:"cookie",m:"쿠키",e:"🍪"},{w:"count",m:"세다",e:"🔢"},
+  {w:"cow",m:"소",e:"🐄"},{w:"cry",m:"울다",e:"😢"},{w:"cup",m:"컵",e:"☕"},
+  {w:"dance",m:"춤추다",e:"💃"},{w:"dark",m:"어두운",e:"🌑"},{w:"desk",m:"책상",e:"🖥️"},
+  {w:"dinner",m:"저녁식사",e:"🍱"},{w:"draw",m:"그리다",e:"🎨"},{w:"dream",m:"꿈",e:"💭"},
+  {w:"dress",m:"드레스",e:"👗"},{w:"drink",m:"마시다",e:"🥤"},{w:"drive",m:"운전하다",e:"🚗"},
+  {w:"family",m:"가족",e:"👨‍👩‍👧"},{w:"fast",m:"빠른",e:"⚡"},{w:"father",m:"아버지",e:"👨"},
+  {w:"feel",m:"느끼다",e:"🫀"},{w:"fire",m:"불",e:"🔥"},{w:"fly",m:"날다",e:"🕊️"},
+  {w:"food",m:"음식",e:"🍜"},{w:"forest",m:"숲",e:"🌲"},{w:"funny",m:"재미있는",e:"😂"},
+  {w:"gift",m:"선물",e:"🎁"},{w:"girl",m:"소녀",e:"👧"},{w:"give",m:"주다",e:"🤲"},
+  {w:"glad",m:"기쁜",e:"😄"},{w:"glass",m:"유리컵",e:"🥛"},{w:"glove",m:"장갑",e:"🧤"},
+  {w:"go",m:"가다",e:"🚶"},{w:"good",m:"좋은",e:"👍"},{w:"grape",m:"포도",e:"🍇"},
+  {w:"grass",m:"풀",e:"🌿"},{w:"grow",m:"자라다",e:"🌱"},{w:"help",m:"돕다",e:"🙋"},
+  {w:"horse",m:"말",e:"🐴"},{w:"hungry",m:"배고픈",e:"🍴"},{w:"ice",m:"얼음",e:"🧊"},
+  {w:"juice",m:"주스",e:"🧃"},{w:"keep",m:"유지하다",e:"🔒"},{w:"key",m:"열쇠",e:"🔑"},
+  {w:"kind",m:"친절한",e:"🤗"},{w:"kitchen",m:"부엌",e:"🍳"},{w:"kite",m:"연",e:"🪁"},
+  {w:"lake",m:"호수",e:"🏞️"},{w:"lamp",m:"램프",e:"💡"},{w:"large",m:"큰(large)",e:"🦣"},
+  {w:"laugh",m:"웃다",e:"😄"},{w:"leaf",m:"나뭇잎",e:"🍃"},{w:"letter",m:"편지",e:"✉️"},
+  {w:"light",m:"빛",e:"💡"},{w:"like",m:"좋아하다",e:"❤️"},{w:"listen",m:"듣다",e:"👂"},
+  {w:"long",m:"긴",e:"📏"},{w:"love",m:"사랑",e:"💕"}
 ];
+
 const S={
   apple:{s:"She ate a red ___ every morning.",t:"그녀는 매일 아침 빨간 사과를 먹었다."},
   banana:{s:"The monkey loves to eat ___.",t:"원숭이는 바나나 먹는 걸 좋아한다."},
@@ -733,298 +282,326 @@ const S={
   swim:{s:"He learned to ___ at age five.",t:"그는 다섯 살에 수영을 배웠다."},
   toy:{s:"She shared her ___ with her little brother.",t:"그녀는 남동생과 장난감을 나눠 가졌다."},
   yellow:{s:"The sun is big and ___.",t:"태양은 크고 노랗다."},
-  zoo:{s:"They saw a giraffe at the ___.",t:"그들은 동물원에서 기린을 봤다."}
+  zoo:{s:"They saw a giraffe at the ___.",t:"그들은 동물원에서 기린을 봤다."},
+  airplane:{s:"The ___ flew over the mountains.",t:"비행기가 산 위를 날아갔다."},
+  angry:{s:"He felt ___ when he lost the game.",t:"그는 게임에서 지자 화가 났다."},
+  answer:{s:"She gave the right ___ to the question.",t:"그녀는 질문에 맞는 대답을 했다."},
+  arm:{s:"He hurt his ___ playing soccer.",t:"그는 축구하다가 팔을 다쳤다."},
+  baby:{s:"The ___ is sleeping in the crib.",t:"아기가 아기 침대에서 자고 있다."},
+  bag:{s:"She put her books in her ___.",t:"그녀는 가방에 책을 넣었다."},
+  beach:{s:"We built sandcastles at the ___.",t:"우리는 해변에서 모래성을 쌓았다."},
+  bike:{s:"He rides his ___ to school.",t:"그는 자전거를 타고 학교에 간다."},
+  black:{s:"She has a ___ cat named Luna.",t:"그녀는 루나라는 검은 고양이가 있다."},
+  blue:{s:"The sky is bright ___ today.",t:"오늘 하늘이 밝은 파란색이다."},
+  body:{s:"Exercise keeps your ___ healthy.",t:"운동은 몸을 건강하게 유지시켜 준다."},
+  box:{s:"He put the toys in a big ___.",t:"그는 큰 상자에 장난감을 넣었다."},
+  boy:{s:"The ___ ran fast in the race.",t:"그 소년은 경주에서 빠르게 달렸다."},
+  bridge:{s:"They walked across the old ___.",t:"그들은 오래된 다리를 건넜다."},
+  brother:{s:"My ___ and I play games together.",t:"내 형(남동생)과 나는 함께 게임을 한다."},
+  brown:{s:"The puppy has ___ spots on its back.",t:"강아지 등에 갈색 점이 있다."},
+  build:{s:"They want to ___ a new playground.",t:"그들은 새 놀이터를 짓고 싶어한다."},
+  buy:{s:"She wants to ___ a new dress.",t:"그녀는 새 드레스를 사고 싶어한다."},
+  cap:{s:"He wore a red ___ on sunny days.",t:"그는 햇볕이 쨍한 날 빨간 야구모자를 썼다."},
+  car:{s:"Dad washed the ___ on Saturday.",t:"아빠는 토요일에 자동차를 닦았다."},
+  carrot:{s:"The rabbit ate a big orange ___.",t:"토끼가 큰 주황색 당근을 먹었다."},
+  cheese:{s:"She put ___ on top of the pizza.",t:"그녀는 피자 위에 치즈를 얹었다."},
+  chicken:{s:"The ___ laid an egg in the morning.",t:"닭이 아침에 알을 낳았다."},
+  city:{s:"They moved to a big ___ last year.",t:"그들은 작년에 큰 도시로 이사했다."},
+  class:{s:"She sits in the front row of ___.",t:"그녀는 수업 시간에 앞줄에 앉는다."},
+  clean:{s:"Keep your room ___ every day.",t:"매일 방을 깨끗하게 유지해."},
+  climb:{s:"The kids love to ___ the big tree.",t:"아이들은 큰 나무를 오르는 걸 좋아한다."},
+  cook:{s:"Mom loves to ___ new recipes.",t:"엄마는 새로운 요리를 만드는 걸 좋아한다."},
+  cookie:{s:"She baked a chocolate ___ for me.",t:"그녀는 나를 위해 초콜릿 쿠키를 구웠다."},
+  count:{s:"Can you ___ the stars in the sky?",t:"하늘의 별을 셀 수 있니?"},
+  cow:{s:"The ___ gives us fresh milk.",t:"소는 신선한 우유를 준다."},
+  cry:{s:"The baby started to ___ at night.",t:"아기가 밤에 울기 시작했다."},
+  cup:{s:"She filled her ___ with hot tea.",t:"그녀는 컵에 뜨거운 차를 가득 채웠다."},
+  dance:{s:"She loves to ___ to pop music.",t:"그녀는 팝 음악에 맞춰 춤추는 걸 좋아한다."},
+  dark:{s:"The room was ___ without any lights.",t:"불이 없으니 방이 어두웠다."},
+  desk:{s:"He put his laptop on the ___.",t:"그는 책상 위에 노트북을 올려뒀다."},
+  dinner:{s:"The family sat together for ___.",t:"가족이 저녁식사를 위해 함께 앉았다."},
+  draw:{s:"She likes to ___ animals in her notebook.",t:"그녀는 공책에 동물 그림 그리는 걸 좋아한다."},
+  dream:{s:"He had a funny ___ last night.",t:"그는 어젯밤 재미있는 꿈을 꿨다."},
+  dress:{s:"She wore a pink ___ to the party.",t:"그녀는 파티에 분홍색 드레스를 입었다."},
+  drink:{s:"Remember to ___ enough water daily.",t:"매일 물을 충분히 마시는 걸 기억해."},
+  drive:{s:"Dad will ___ us to the airport.",t:"아빠가 우리를 공항까지 태워다 줄 거야."},
+  family:{s:"My ___ goes camping every summer.",t:"우리 가족은 매여름 캠핑을 간다."},
+  fast:{s:"The cheetah is a very ___ animal.",t:"치타는 매우 빠른 동물이다."},
+  father:{s:"My ___ reads me a story at night.",t:"아버지는 밤에 나에게 이야기를 읽어주신다."},
+  feel:{s:"How do you ___ after exercise?",t:"운동 후에 어떤 느낌이 드니?"},
+  fire:{s:"They sat around the ___ to stay warm.",t:"그들은 따뜻하게 있으려고 불 주위에 앉았다."},
+  fly:{s:"Birds ___ south in winter.",t:"새들은 겨울에 남쪽으로 난다."},
+  food:{s:"She cooked delicious ___ for everyone.",t:"그녀는 모두를 위해 맛있는 음식을 만들었다."},
+  forest:{s:"They hiked through a dark ___.",t:"그들은 어두운 숲을 걸어서 지나갔다."},
+  funny:{s:"He told a ___ joke at lunch.",t:"그는 점심 때 재미있는 농담을 했다."},
+  gift:{s:"She got a lovely ___ on her birthday.",t:"그녀는 생일에 사랑스러운 선물을 받았다."},
+  girl:{s:"The ___ smiled and waved hello.",t:"그 소녀는 웃으며 손을 흔들어 인사했다."},
+  give:{s:"Please ___ me a piece of cake.",t:"케이크 한 조각 주세요."},
+  glad:{s:"She was ___ to see her old friend.",t:"그녀는 오랜 친구를 만나 기뻤다."},
+  glass:{s:"He poured juice into a tall ___.",t:"그는 긴 유리컵에 주스를 따랐다."},
+  glove:{s:"She wore warm ___s in the snow.",t:"그녀는 눈 속에서 따뜻한 장갑을 끼었다."},
+  go:{s:"Let's ___ to the park after lunch.",t:"점심 후에 공원에 가자."},
+  good:{s:"She is a very ___ student.",t:"그녀는 정말 좋은 학생이다."},
+  grape:{s:"He ate a bunch of purple ___s.",t:"그는 보라색 포도 한 송이를 먹었다."},
+  grass:{s:"The cows ate the fresh green ___.",t:"소들이 신선한 초록 풀을 먹었다."},
+  grow:{s:"Plants need sunlight to ___.",t:"식물은 자라기 위해 햇빛이 필요하다."},
+  help:{s:"Can you ___ me carry these bags?",t:"이 가방 드는 것 좀 도와줄 수 있어?"},
+  horse:{s:"She learned to ride a ___ at camp.",t:"그녀는 캠프에서 말 타는 법을 배웠다."},
+  hungry:{s:"The kids were ___ after playing all day.",t:"아이들은 하루 종일 놀고 나서 배가 고팠다."},
+  ice:{s:"She put ___ in her cold drink.",t:"그녀는 차가운 음료에 얼음을 넣었다."},
+  juice:{s:"He drank orange ___ for breakfast.",t:"그는 아침에 오렌지 주스를 마셨다."},
+  keep:{s:"Try to ___ your desk tidy.",t:"책상을 깔끔하게 유지하려고 노력해."},
+  key:{s:"She lost the ___ to her locker.",t:"그녀는 사물함 열쇠를 잃어버렸다."},
+  kind:{s:"It is ___ to share with others.",t:"다른 사람과 나누는 것은 친절한 행동이다."},
+  kitchen:{s:"Mom was cooking in the ___.",t:"엄마는 부엌에서 요리를 하고 있었다."},
+  kite:{s:"He flew his ___ on a windy day.",t:"그는 바람 부는 날 연을 날렸다."},
+  lake:{s:"They went fishing at the ___.",t:"그들은 호수에 낚시하러 갔다."},
+  lamp:{s:"She turned on the ___ to read.",t:"그녀는 책을 읽으려고 램프를 켰다."},
+  large:{s:"An elephant is a very ___ animal.",t:"코끼리는 매우 큰 동물이다."},
+  laugh:{s:"The joke made everyone ___.",t:"농담이 모두를 웃게 했다."},
+  leaf:{s:"A red ___ fell from the tree.",t:"빨간 나뭇잎이 나무에서 떨어졌다."},
+  letter:{s:"She wrote a ___ to her grandma.",t:"그녀는 할머니에게 편지를 썼다."},
+  light:{s:"Turn off the ___ when you leave.",t:"나갈 때 불을 꺼."},
+  like:{s:"I ___ to read books before bed.",t:"나는 자기 전에 책 읽는 것을 좋아한다."},
+  listen:{s:"Please ___ carefully to the teacher.",t:"선생님 말씀을 주의 깊게 들어요."},
+  long:{s:"The road was very ___ and straight.",t:"그 도로는 매우 길고 곧았다."},
+  love:{s:"I ___ spending time with my family.",t:"나는 가족과 시간을 보내는 것을 사랑한다."}
 };
 
-const PLANTS={1:['🌱','🌿'],2:['🌸','🌼','🌺'],3:['🌻','🌳','🎋'],4:['🌲','🎄','🍀']};
-const BONUSES={5:{icon:'🍀',desc:'5연속 정답!',pts:30},10:{icon:'🎁',desc:'10연속 정답!',pts:70},20:{icon:'⭐',desc:'20연속 전설!',pts:200}};
+const STAGE_PLANTS=['🌱','🌿','🌸','🌳'];
+let state={score:0,bestStreak:0,streak:0,words:{}};
+let modal={word:null,step:0,hintUsed:false};
 
-let state={score:0,bestStreak:0,totalStreak:0,garden:{},reviewCount:0,reviewStreak:0,bonusProgress:0};
-let sess={words:[],idx:0,mode:'flash',hintUsed:false,cur:null};
-let rev={words:[],idx:0,cur:null,answered:false,qType:'mc'};
-
-function load(){try{const d=localStorage.getItem('pg3');if(d)state=JSON.parse(d);}catch(e){}}
-function save(){localStorage.setItem('pg3',JSON.stringify(state));}
+function load(){try{const d=localStorage.getItem('pg5');if(d)state=JSON.parse(d);}catch(e){}}
+function save(){localStorage.setItem('pg5',JSON.stringify(state));}
 
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  if(id==='startScreen')updateStart();
+  if(id==='startScreen')renderStart();
+  if(id==='wordListScreen')renderWordList();
   if(id==='gardenScreen')renderGarden();
 }
-function goGarden(){showScreen('gardenScreen');}
 
-function updateStart(){
-  document.getElementById('stPlanted').textContent=Object.keys(state.garden).length;
+function renderStart(){
+  document.getElementById('stPlanted').textContent=Object.keys(state.words).length;
   document.getElementById('stScore').textContent=state.score;
   document.getElementById('stStreak').textContent=state.bestStreak;
 }
 
-function startGame(){
-  sess.words=[...WORDS].sort(()=>Math.random()-.5);
-  sess.idx=0;
-  document.getElementById('curScore').textContent=state.score;
-  showScreen('studyScreen');
-  showWord();
+function getPlant(stage){
+  if(stage===0)return '🟫';
+  return STAGE_PLANTS[Math.min(stage-1,3)];
 }
 
-function showWord(){
-  if(sess.idx>=sess.words.length){goGarden();return;}
-  const w=sess.words[sess.idx];
-  sess.cur=w;sess.hintUsed=false;
-  const total=sess.words.length;
-  const pct=Math.round((sess.idx/total)*100);
-  document.getElementById('progFill').style.width=pct+'%';
-  document.getElementById('progLabel').textContent=`${sess.idx} / ${total}`;
-
-  const inGarden=!!state.garden[w.w];
-  sess.mode=!inGarden?'flash':state.garden[w.w].stage>=2?'eng':'fill';
-
-  const tag=document.getElementById('modeTag');
-  const wMain=document.getElementById('wMain');
-  const wMean=document.getElementById('wMean');
-  const sentBox=document.getElementById('sentBox');
-  const inputRow=document.getElementById('inputRow');
-  const inp=document.getElementById('ansInput');
-  const fb=document.getElementById('feedback');
-  const hBtn=document.getElementById('hintBtn');
-
-  fb.className='feedback fb-hide';
-  inp.value='';inp.className='ans-input';
-
-  if(sess.mode==='flash'){
-    tag.textContent='플래시카드';tag.className='mode-tag tag-flash';
-    wMain.textContent=w.w;wMean.textContent=w.m;wMean.style.display='block';
-    const sd=S[w.w];
-    if(sd){
-      sentBox.innerHTML=sd.s.replace('___',`<strong style="color:#4a7c3f;">${w.w}</strong>`)+`<div class="sentence-ko">${sd.t}</div>`;
-      sentBox.style.display='block';
-    } else sentBox.style.display='none';
-    inputRow.style.display='none';hBtn.style.display='none';
-  } else if(sess.mode==='fill'){
-    tag.textContent='빈칸 채우기';tag.className='mode-tag tag-fill';
-    wMain.textContent=w.m;wMean.style.display='none';
-    const sd=S[w.w];
-    if(sd){
-      sentBox.innerHTML=sd.s.replace('___','<span style="background:#c8a96e;color:#fff;padding:0 8px;border-radius:5px;font-weight:800;">___</span>')+`<div class="sentence-ko">${sd.t}</div>`;
-      sentBox.style.display='block';
-    } else sentBox.style.display='none';
-    inputRow.style.display='flex';hBtn.style.display='block';
-  } else {
-    tag.textContent='영단어 쓰기';tag.className='mode-tag tag-eng';
-    wMain.textContent=w.m;wMean.style.display='none';sentBox.style.display='none';
-    inputRow.style.display='flex';hBtn.style.display='block';
-  }
-}
-
-function showHint(){
-  sess.hintUsed=true;
-  const w=sess.cur.w;
-  const hint=w[0]+w.slice(1).split('').map((c,i)=>i<2?c:'_').join('');
-  const fb=document.getElementById('feedback');
-  fb.textContent='힌트: '+hint;fb.className='feedback fb-hint';
-}
-
-function checkAnswer(){
-  const w=sess.cur;
-  const val=document.getElementById('ansInput').value.trim().toLowerCase();
-  const inp=document.getElementById('ansInput');
-  const fb=document.getElementById('feedback');
-  if(!val)return;
-  if(val===w.w){
-    inp.className='ans-input ok';
-    fb.textContent=sess.hintUsed?'정답! (힌트 사용)':'정답! 🌿';
-    fb.className='feedback fb-ok';
-    state.score+=sess.hintUsed?5:10;
-    state.totalStreak++;
-    if(state.totalStreak>state.bestStreak)state.bestStreak=state.totalStreak;
-    document.getElementById('curScore').textContent=state.score;
-    plantWord(w.w);save();
-    setTimeout(nextWord,700);
-  } else {
-    inp.className='ans-input no';
-    fb.textContent='틀렸어요! 정답: '+w.w;
-    fb.className='feedback fb-no';
-    state.totalStreak=0;save();
-    setTimeout(nextWord,1200);
-  }
-}
-
-function plantWord(word){
-  if(!state.garden[word]){
-    const p=PLANTS[1];
-    state.garden[word]={stage:1,plant:p[Math.floor(Math.random()*p.length)],reviewCount:0};
-  }
-}
-function upgradeWord(word){
-  if(!state.garden[word])return;
-  const g=state.garden[word];
-  if(g.stage<4){g.stage++;const p=PLANTS[g.stage];g.plant=p[Math.floor(Math.random()*p.length)];}
-  g.reviewCount++;
-}
-
-function nextWord(){
-  if(sess.mode==='flash'){plantWord(sess.cur.w);state.score+=5;save();}
-  sess.idx++;showWord();
+function renderWordList(){
+  const grid=document.getElementById('wordGrid');
+  grid.innerHTML='';
+  let learned=0;
+  WORDS.forEach(wd=>{
+    const data=state.words[wd.w]||{stage:0};
+    if(data.stage>=4)learned++;
+    const tile=document.createElement('div');
+    tile.className='word-tile';
+    let dots='';
+    for(let i=0;i<4;i++){
+      const cls=i<data.stage?'done':i===data.stage&&data.stage<4?'cur':'';
+      dots+=`<div class="stage-dot ${cls}"></div>`;
+    }
+    tile.innerHTML=`
+      <span class="tile-plant">${data.stage===0?wd.e:getPlant(data.stage)}</span>
+      <span class="tile-word">${wd.w}</span>
+      <span class="tile-meaning">${wd.m}</span>
+      <div class="stage-bar">${dots}</div>`;
+    tile.onclick=()=>openStudy(wd.w);
+    grid.appendChild(tile);
+  });
+  document.getElementById('learnedCount').textContent=learned;
 }
 
 function renderGarden(){
-  const grid=document.getElementById('plots');
-  grid.innerHTML='';
-  const planted=Object.entries(state.garden);
-  for(let i=0;i<60;i++){
+  const plots=document.getElementById('gardenPlots');
+  plots.innerHTML='';
+  const planted=Object.entries(state.words);
+  for(let i=0;i<120;i++){
     const el=document.createElement('div');
-    el.className='plot';
+    el.className='gplot';
     if(i<planted.length){
       const[word,data]=planted[i];
-      el.classList.add('s'+data.stage);
-      const wData=WORDS.find(x=>x.w===word);
-      el.innerHTML=`<div class="plot-icon">${data.plant}</div><div class="plot-word">${word}</div><div class="ptip">${word} · ${wData?wData.m:''}<br>성장 ${'★'.repeat(data.stage)} · 복습 ${data.reviewCount}회</div>`;
-    } else {
-      el.classList.add('empty');
-      el.innerHTML='<div style="font-size:16px;">·</div>';
+      el.classList.add('planted','s'+Math.min(data.stage,4));
+      el.innerHTML=`<div class="gplot-icon">${getPlant(data.stage)}</div><div class="gplot-word">${word}</div>`;
+      el.onclick=()=>openStudy(word);
     }
-    grid.appendChild(el);
+    plots.appendChild(el);
   }
-  document.getElementById('gs1').textContent=planted.length;
-  document.getElementById('gs2').textContent=state.reviewCount;
+  const full=Object.values(state.words).filter(d=>d.stage>=4).length;
+  document.getElementById('gs1').textContent=Object.keys(state.words).length;
+  document.getElementById('gs2').textContent=full;
   document.getElementById('gs3').textContent=state.score;
   document.getElementById('gs4').textContent=state.bestStreak;
 }
 
-function startReview(){
-  const planted=Object.keys(state.garden);
-  if(!planted.length){alert('먼저 단어를 심어봐요! 🌱');return;}
-  rev.words=[...planted].sort(()=>Math.random()-.5);
-  rev.idx=0;state.reviewStreak=0;
-  document.getElementById('revStreak').textContent=0;
-  updateBonusBar();showScreen('reviewScreen');showRevQ();
+function openStudy(word){
+  const data=state.words[word]||{stage:0};
+  modal.word=word;
+  modal.step=data.stage>=4?0:data.stage;
+  modal.hintUsed=false;
+  document.getElementById('studyModal').classList.add('open');
+  renderStudyStep();
 }
 
-function showRevQ(){
-  if(rev.idx>=rev.words.length){rev.words=[...Object.keys(state.garden)].sort(()=>Math.random()-.5);rev.idx=0;}
-  const word=rev.words[rev.idx];rev.cur=word;rev.answered=false;
+function closeModal(){
+  document.getElementById('studyModal').classList.remove('open');
+  const active=document.querySelector('.screen.active');
+  if(active&&active.id==='wordListScreen')renderWordList();
+  if(active&&active.id==='gardenScreen')renderGarden();
+}
+
+function updateStepBar(){
+  for(let i=0;i<4;i++){
+    const el=document.getElementById('step'+i);
+    el.className='step-item';
+    if(i<modal.step)el.classList.add('done');
+    else if(i===modal.step)el.classList.add('active');
+  }
+}
+
+function renderStudyStep(){
+  modal.hintUsed=false;
+  updateStepBar();
+  const word=modal.word;
+  const step=modal.step;
   const wData=WORDS.find(x=>x.w===word);
   const sd=S[word];
-  const planted=Object.keys(state.garden);
-  rev.qType=Math.random()>.5&&planted.length>=4?'mc':'type';
-  const rType=Math.floor(Math.random()*3);
+  const content=document.getElementById('studyContent');
 
-  const lbl=document.getElementById('revTypeLbl');
-  const rQ=document.getElementById('revQ');
-  const rKo=document.getElementById('revQKo');
-  const rSent=document.getElementById('revSent');
-  const rSentKo=document.getElementById('revSentKo');
-  const rChoices=document.getElementById('revChoices');
-  const rRow=document.getElementById('revInpRow');
-  const rInp=document.getElementById('revInp');
-
-  rInp.value='';rInp.className='rev-inp';
-  rQ.style.display=rKo.style.display=rSent.style.display=rSentKo.style.display='none';
-  rChoices.style.display=rRow.style.display='none';
-
-  if(rType===0){
-    lbl.textContent='🇰🇷 뜻 보고 영단어 맞추기';
-    rQ.textContent=wData?wData.m:'';rQ.style.display='block';
-  } else if(rType===1&&sd){
-    lbl.textContent='✏️ 빈칸에 들어갈 단어 쓰기';
-    rSent.innerHTML=sd.s.replace('___','<span style="background:#c8a96e;color:#fff;padding:0 6px;border-radius:5px;font-weight:800;">___</span>');
-    rSentKo.textContent=sd.t;
-    rSent.style.display='block';rSentKo.style.display='block';
+  if(step===0){
+    content.innerHTML=`
+      <div class="study-content">
+        <span class="study-mode-tag tag-1">🃏 플래시카드</span>
+        <div style="font-size:52px;margin-bottom:8px;">${wData.e}</div>
+        <div class="study-word">${word}</div>
+        <div class="study-meaning">${wData.m}</div>
+        ${sd?`<div class="study-sentence">${sd.s.replace('___',`<strong style="color:#4a7c3f;">${word}</strong>`)}<div class="study-sentence-ko">${sd.t}</div></div>`:''}
+        <div class="study-btn-row" style="margin-top:14px;">
+          <button class="study-btn sbtn-green" onclick="advanceStep()">외웠어요! →</button>
+        </div>
+      </div>`;
+  } else if(step===1){
+    content.innerHTML=`
+      <div class="study-content">
+        <span class="study-mode-tag tag-2">✏️ 단어 맞추기</span>
+        <div style="font-size:48px;margin-bottom:8px;">${wData.e}</div>
+        <div class="study-meaning">${wData.m}</div>
+        <div style="font-size:13px;color:#7a5c2e;font-weight:700;margin-bottom:4px;">영어 단어를 입력하세요</div>
+        <div class="study-feedback fb-hide" id="sf"></div>
+        <input class="study-input" id="si" placeholder="영어 단어..." autocomplete="off" autocorrect="off" spellcheck="false">
+        <div class="study-btn-row">
+          <button class="study-btn sbtn-tan" onclick="showStudyHint()">💡 힌트</button>
+          <button class="study-btn sbtn-green" onclick="checkStudy()">확인 ✓</button>
+        </div>
+      </div>`;
+    document.getElementById('si').addEventListener('keydown',e=>{if(e.key==='Enter')checkStudy();});
+  } else if(step===2){
+    const sentDisplay=sd?sd.s.replace('___','<span style="background:#c8a96e;color:#fff;padding:0 8px;border-radius:5px;font-weight:800;">___</span>'):'';
+    content.innerHTML=`
+      <div class="study-content">
+        <span class="study-mode-tag tag-3">📝 빈칸 채우기</span>
+        <div style="font-size:40px;margin-bottom:8px;">${wData.e}</div>
+        <div class="study-sentence">${sentDisplay}<div class="study-sentence-ko">${sd?sd.t:''}</div></div>
+        <div class="study-feedback fb-hide" id="sf"></div>
+        <input class="study-input" id="si" placeholder="빈칸에 들어갈 단어..." autocomplete="off" autocorrect="off" spellcheck="false">
+        <div class="study-btn-row">
+          <button class="study-btn sbtn-tan" onclick="showStudyHint()">💡 힌트</button>
+          <button class="study-btn sbtn-green" onclick="checkStudy()">확인 ✓</button>
+        </div>
+      </div>`;
+    document.getElementById('si').addEventListener('keydown',e=>{if(e.key==='Enter')checkStudy();});
+  } else if(step===3){
+    content.innerHTML=`
+      <div class="study-content">
+        <span class="study-mode-tag tag-4">✍️ 문장 쓰기</span>
+        <div style="font-size:40px;margin-bottom:8px;">${wData.e}</div>
+        <div class="study-meaning">${wData.m}</div>
+        ${sd?`<div class="study-sentence-ko" style="font-size:13px;margin-bottom:10px;">${sd.t}</div>`:''}
+        <div style="font-size:12px;color:#7a5c2e;font-weight:700;margin-bottom:6px;">영어 단어를 다시 한 번 써보세요!</div>
+        <div class="study-feedback fb-hide" id="sf"></div>
+        <input class="study-input" id="si" placeholder="영어 단어..." autocomplete="off" autocorrect="off" spellcheck="false">
+        <div class="study-btn-row">
+          <button class="study-btn sbtn-tan" onclick="showStudyHint()">💡 힌트</button>
+          <button class="study-btn sbtn-green" onclick="checkStudy()">확인 ✓</button>
+        </div>
+      </div>`;
+    document.getElementById('si').addEventListener('keydown',e=>{if(e.key==='Enter')checkStudy();});
   } else {
-    lbl.textContent='🇬🇧 영어 보고 뜻 확인';
-    rQ.textContent=word;rQ.style.display='block';
+    showComplete();
   }
-
-  if(rev.qType==='mc'){rChoices.style.display='grid';buildChoices(word,wData,rType);}
-  else rRow.style.display='flex';
 }
 
-function buildChoices(correctWord,wData,rType){
-  const box=document.getElementById('revChoices');box.innerHTML='';
-  const planted=Object.keys(state.garden);
-  const wrongs=planted.filter(x=>x!==correctWord).sort(()=>Math.random()-.5).slice(0,3);
-  let options;
-  if(rType===2){
-    const correct=wData?wData.m:'';
-    const wm=wrongs.map(x=>(WORDS.find(y=>y.w===x)||{}).m||'').filter(Boolean);
-    options=[correct,...wm].sort(()=>Math.random()-.5);
-    options.forEach(opt=>{
-      const btn=document.createElement('button');
-      btn.className='choice';btn.textContent=opt;
-      btn.onclick=()=>{if(rev.answered)return;rev.answered=true;const ok=opt===correct;btn.classList.add(ok?'ok':'no');if(!ok)box.querySelectorAll('.choice').forEach(b=>{if(b.textContent===correct)b.classList.add('ok');});handleRevResult(ok);};
-      box.appendChild(btn);
-    });
+function showStudyHint(){
+  modal.hintUsed=true;
+  const w=modal.word;
+  const hint=w[0]+w.slice(1).split('').map((c,i)=>i<2?c:'_').join('');
+  const fb=document.getElementById('sf');
+  if(fb){fb.textContent='힌트: '+hint;fb.className='study-feedback fb-hint';}
+}
+
+function checkStudy(){
+  const inp=document.getElementById('si');
+  const fb=document.getElementById('sf');
+  if(!inp)return;
+  const val=inp.value.trim().toLowerCase();
+  if(!val)return;
+  if(val===modal.word){
+    inp.className='study-input ok';
+    fb.textContent='정답! 🌿';fb.className='study-feedback fb-ok';
+    state.score+=modal.hintUsed?5:10;
+    state.streak++;
+    if(state.streak>state.bestStreak)state.bestStreak=state.streak;
+    save();
+    setTimeout(()=>advanceStep(),700);
   } else {
-    options=[correctWord,...wrongs].sort(()=>Math.random()-.5);
-    options.forEach(opt=>{
-      const btn=document.createElement('button');
-      btn.className='choice';btn.textContent=opt;
-      btn.onclick=()=>{if(rev.answered)return;rev.answered=true;const ok=opt===correctWord;btn.classList.add(ok?'ok':'no');if(!ok)box.querySelectorAll('.choice').forEach(b=>{if(b.textContent===correctWord)b.classList.add('ok');});handleRevResult(ok);};
-      box.appendChild(btn);
-    });
+    inp.className='study-input no';
+    fb.textContent='틀렸어요! 정답: '+modal.word;fb.className='study-feedback fb-no';
+    state.streak=0;save();
+    setTimeout(()=>{inp.className='study-input';inp.value='';},1000);
   }
 }
 
-function checkReview(){
-  if(rev.answered)return;
-  const val=document.getElementById('revInp').value.trim().toLowerCase();
-  if(!val)return;rev.answered=true;
-  const wData=WORDS.find(x=>x.w===rev.cur);
-  const ok=val===rev.cur||(wData&&val===wData.m);
-  document.getElementById('revInp').style.borderColor=ok?'#5aab5e':'#d95a3a';
-  document.getElementById('revInp').style.background=ok?'#eafae8':'#fde0d8';
-  handleRevResult(ok);
-}
-
-function handleRevResult(ok){
-  if(ok){
-    state.score+=8;state.reviewStreak++;state.reviewCount++;state.totalStreak++;
-    if(state.totalStreak>state.bestStreak)state.bestStreak=state.totalStreak;
-    state.bonusProgress=(state.bonusProgress||0)+1;
-    upgradeWord(rev.cur);spawnConfetti(4,'global');
-    document.getElementById('revStreak').textContent=state.reviewStreak;
-    updateBonusBar();checkBonus();
-  } else {
-    state.reviewStreak=0;state.totalStreak=0;
-    state.bonusProgress=Math.max(0,(state.bonusProgress||0)-1);
-    document.getElementById('revStreak').textContent=0;
-    updateBonusBar();
+function advanceStep(){
+  const word=modal.word;
+  if(!state.words[word])state.words[word]={stage:0};
+  const data=state.words[word];
+  if(modal.step>=data.stage&&data.stage<4){
+    data.stage++;
+    data.plant=STAGE_PLANTS[Math.min(data.stage-1,3)];
   }
+  modal.step++;
   save();
-  if(!ok||!document.getElementById('bonusOvl').classList.contains('show')){
-    setTimeout(()=>{rev.idx++;showRevQ();},ok?600:1400);
-  }
+  if(modal.step>=4)showComplete();
+  else renderStudyStep();
 }
 
-function updateBonusBar(){
-  const p=state.bonusProgress||0;
-  const pct=Math.min(100,Math.round((p%5)/5*100));
-  document.getElementById('bonusFill').style.width=pct+'%';
-  document.getElementById('bonusCnt').textContent=(p%5)+' / 5';
+function showComplete(){
+  updateStepBar();
+  const word=modal.word;
+  const data=state.words[word]||{stage:4};
+  const wData=WORDS.find(x=>x.w===word);
+  document.getElementById('studyContent').innerHTML=`
+    <div class="complete-box">
+      <span class="complete-plant">${getPlant(data.stage)}</span>
+      <div class="complete-title">${data.stage>=4?'완전 성장!':'복습 완료!'}</div>
+      <div class="complete-desc">${word} (${wData?wData.m:''})<br>${data.stage>=4?'정원에 나무가 자랐어요! 🌳':'단어를 다시 익혔어요!'}</div>
+      <div class="study-btn-row">
+        <button class="study-btn sbtn-tan" onclick="closeModal()">정원으로</button>
+        <button class="study-btn sbtn-green" onclick="closeModal();showScreen('wordListScreen')">다른 단어</button>
+      </div>
+    </div>`;
+  if(data.stage>=4)spawnConfetti(14);
 }
 
-function checkBonus(){
-  const p=state.bonusProgress||0;
-  if(p>0&&p%5===0){
-    const key=p<=5?5:p<=10?10:20;
-    const r=BONUSES[key]||BONUSES[5];
-    state.score+=r.pts;
-    document.getElementById('bpIcon').textContent=r.icon;
-    document.getElementById('bpDesc').textContent=r.desc;
-    document.getElementById('bpPts').textContent='+'+r.pts+'점';
-    document.getElementById('bonusOvl').classList.add('show');
-    spawnConfetti(18,'global');save();
-  }
-}
-
-function closeBonus(){
-  document.getElementById('bonusOvl').classList.remove('show');
-  rev.idx++;showRevQ();
-}
-
-function spawnConfetti(n,target){
-  const wrap=document.getElementById(target==='global'?'globalConfetti':'gardenConfetti');
+function spawnConfetti(n){
+  const wrap=document.getElementById('confettiWrap');
   const pieces=['🌸','🍀','⭐','🌼','🌿','🎊','🍃'];
   for(let i=0;i<n;i++){
     const el=document.createElement('div');
@@ -1032,18 +609,11 @@ function spawnConfetti(n,target){
     el.textContent=pieces[Math.floor(Math.random()*pieces.length)];
     el.style.left=(10+Math.random()*80)+'%';
     el.style.animationDuration=(1.5+Math.random()*2)+'s';
-    el.style.animationDelay=(Math.random()*.4)+'s';
+    el.style.animationDelay=(Math.random()*.5)+'s';
     wrap.appendChild(el);
     setTimeout(()=>el.remove(),4000);
   }
 }
-
-document.getElementById('ansInput').addEventListener('keydown',e=>{
-  if(e.key==='Enter'){if(sess.mode==='flash')nextWord();else checkAnswer();}
-});
-document.getElementById('revInp').addEventListener('keydown',e=>{
-  if(e.key==='Enter')checkReview();
-});
 
 load();showScreen('startScreen');
 </script>
